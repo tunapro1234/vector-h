@@ -32,7 +32,7 @@ const int *vector_int_p_read(const vector_int_t *self, size_t index);
 
 // indexe ekleme, ters çevirme, sıralama, swap
 
-void vector_int_swap_indexes(vector_int_t *self, size_t index1, size_t index2) {
+void vector_int_swap(vector_int_t *self, size_t index1, size_t index2) {
 	int tmp = *vector_int_get(self, index1);
 	*vector_int_get(self, index1) = *vector_int_get(self, index2);
 	*vector_int_get(self, index2) = tmp;
@@ -80,6 +80,11 @@ void vector_int_shift_l(vector_int_t *self) {
 	*vector_int_get(self, length-1) = tmp;
 }
 
+void vector_int_reverse(vector_int_t *self) {
+	size_t length = vector_int_length(self);
+	for (int i = 0; i < length/2; i++)
+		vector_int_swap(self, i, length-1-i);
+}
 
 /********************************************************************************/
 
