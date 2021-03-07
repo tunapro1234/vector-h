@@ -25,7 +25,7 @@
  * int vector_int_read(const vector_int_t *self, size_t index);
 */
 
-vector_t(int)
+vector_t(int);
 
 int main() {
 	printf("aa\n");
