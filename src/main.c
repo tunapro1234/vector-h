@@ -54,24 +54,19 @@ int main() {
 	*/
 	/********************************************************************************/
 
-	vector_int_t *v3 = vector_int_init_h(10);
-	for (int i = 0; i < 10; i++)
-		*vector_int_get(v3, i) = 100;
-	
-	for (int i = 0; i < 4; i++)
+	vector_int_t *v3 = vector_int_init_h(5);
+	for (int i = 0; i < 6; i++)
 		vector_int_push_back(v3, i);
-	
-	vector_int_push_back(v3, 4);
-	// vector_int_shift_l(v3);
-	// vector_int_shift_r(v3);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 6; i++)
 		printf("%d ", *vector_int_get(v3, i));
 
 	vector_int_reverse(v3);
 	
+	vector_int_bubble_sort(v3, sort_example);
+
 	printf("\n");
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 6; i++)
 		printf("%d ", *vector_int_get(v3, i));
 	
 

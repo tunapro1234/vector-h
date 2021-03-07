@@ -29,8 +29,19 @@ int vector_int_read(const vector_int_t *self, size_t index);
 const int *vector_int_p_read(const vector_int_t *self, size_t index);
 
 /********************************************************************************/
+/* 
+ * 		indexe ekleme
+ * 		ters çevirme
+ * 		sıralama
+ * 		shift
+ * 		swap
+ * 
+ */
 
-// indexe ekleme, ters çevirme, sıralama, swap
+int* sort_example(int* a, int* b) {
+	/* büyük olanı döndürüyor */
+	return (*a > *b) ? a : b;
+}
 
 void vector_int_swap(vector_int_t *self, size_t index1, size_t index2) {
 	int tmp = *vector_int_get(self, index1);
@@ -39,10 +50,10 @@ void vector_int_swap(vector_int_t *self, size_t index1, size_t index2) {
 }
 
 bool vector_int_insert_p(vector_int_t *self, size_t index, int *value) {
-	if (self->end == self->capacity){
+	if (self->end == self->capacity)
 		if (vector_int_extend_capacity(self) == False)
 			return False;
-	}
+	
 	size_t length = vector_int_length(self);
 	for (int i = length-1; i >= index; i--)
 		*vector_int_get(self, i+1) = *vector_int_get(self, i);
@@ -52,10 +63,10 @@ bool vector_int_insert_p(vector_int_t *self, size_t index, int *value) {
 }
 
 bool vector_int_insert(vector_int_t *self, size_t index, int value) {
-	if (self->end == self->capacity){
+	if (self->end == self->capacity)
 		if (vector_int_extend_capacity(self) == False)
 			return False;
-	}
+	
 	size_t length = vector_int_length(self);
 	for (int i = length-1; i >= index; i--)
 		*vector_int_get(self, i+1) = *vector_int_get(self, i);
@@ -86,12 +97,19 @@ void vector_int_reverse(vector_int_t *self) {
 		vector_int_swap(self, i, length-1-i);
 }
 
+void vector_int_bubble_sort(vector_int_t *self, int* (*key_func)(int*, int*)){
+	size_t i, j, last_index = vector_int_length(self)-1;
+	for (i = 0; i < last_index; i++)
+		for (j = 0; j < last_index-i; j++)
+           	if ( vector_int_get(self, j) == key_func(vector_int_get(self, j), vector_int_get(self, j+1)) )
+              	vector_int_swap(self, j, j+1);
+}
+
 /********************************************************************************/
 
 
 vector_int_t* vector_int_init_h(size_t capacity) {
 	vector_int_t *new_vector = (vector_int_t *)malloc(sizeof(vector_int_t)); 
-	
 	new_vector->start 		= (int *)malloc(sizeof(int) * capacity);
 	new_vector->capacity	= new_vector->start + capacity;
 	new_vector->end			= new_vector->start;
@@ -100,7 +118,6 @@ vector_int_t* vector_int_init_h(size_t capacity) {
 
 vector_int_t vector_int_init(size_t capacity) {
 	vector_int_t new_vector;
-	
 	new_vector.start 		= (int *)malloc(sizeof(int) * capacity);
 	new_vector.capacity		= new_vector.start + capacity;
 	new_vector.end			= new_vector.start;
@@ -176,20 +193,18 @@ bool vector_int_extend_capacity(vector_int_t *self) {
 }
 
 bool vector_int_push_back(vector_int_t *self, int data) {
-	if (self->end == self->capacity){
+	if (self->end == self->capacity)
 		if (vector_int_extend_capacity(self) == False)
 			return False;
-	}
 	*self->end = data;
 	self->end++;
 	return True;
 }
 
 bool vector_int_p_push_back(vector_int_t *self, int *data) {
-	if (self->end == self->capacity){
+	if (self->end == self->capacity)
 		if (vector_int_extend_capacity(self) == False)
 			return False;
-	}
 	memcpy(self->end, data, sizeof(int));
 	self->end++;
 	return True;
