@@ -51,12 +51,26 @@
  * 
  * 
  * void vector_##TYPE##_bubble_sort(vector_##TYPE##_t *self, TYPE* (*key_func)(TYPE*, TYPE*));
+ * 	elemanları bubble sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
+ * 
  * void vector_##TYPE##_swap(vector_##TYPE##_t *self, size_t index1, size_t index2);
+ * 	iki indeksteki elemanları değiştirir
+ * 
  * bool vector_##TYPE##_insert_p(vector_##TYPE##_t *self, size_t index, TYPE *value);
+ * 	verilen adresteki datayı verilen indekse kopyalar
+ * 
  * bool vector_##TYPE##_insert(vector_##TYPE##_t *self, size_t index, TYPE value);
+ * 	verilen datayı indekse kopyalar
+ * 
  * void vector_##TYPE##_shift_r(vector_##TYPE##_t *self);
+ * 	vektörün elemanlarını sağa kaydırır (sonuncu eleman başa geliyor)
+ * 
  * void vector_##TYPE##_shift_l(vector_##TYPE##_t *self);
+ * 	vektörün elemanlarını sola kaydırır (baştaki eleman sola geliyor)
+ * 
  * void vector_##TYPE##_reverse(vector_##TYPE##_t *self);
+ * 	vektörü ters döndürür
+ * 
 */
 
 int* vector_int_sort_example(int *a, int *b);
