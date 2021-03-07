@@ -1,8 +1,8 @@
 
 #include "main.h"
 
-// #include "vector.h"
-#include "test/v1_int_test.h"
+#include "vector.h"
+/* #include "test/v1_int_test.h" */
 
 /*
  * vector_int_t* vector_int_init_h(size_t capacity);
@@ -26,9 +26,10 @@
  * int vector_int_read(const vector_int_t *self, size_t index);
 */
 
+create_vector_t(int);
 
 int main() {
-	/*
+
 	vector_int_t v1 = vector_int_init(5);
 	printf("%u, %u\n", vector_int_capacity(&v1), vector_int_length(&v1));
 	
@@ -50,8 +51,8 @@ int main() {
 
 	for (int i = 0; i < vector_int_size(v2); i++)
 		printf("%d ", *vector_int_get(v2, i));
-	printf("\n");
-	*/
+	printf("\n\n\n");
+
 	/********************************************************************************/
 
 	vector_int_t *v3 = vector_int_init_h(5);
@@ -63,12 +64,15 @@ int main() {
 
 	vector_int_reverse(v3);
 	
-	vector_int_bubble_sort(v3, sort_example);
+	printf("\n");
+	for (int i = 0; i < 6; i++)
+		printf("%d ", *vector_int_get(v3, i));
+	
+	vector_int_bubble_sort(v3, vector_int_sort_example);
 
 	printf("\n");
 	for (int i = 0; i < 6; i++)
 		printf("%d ", *vector_int_get(v3, i));
 	
-
 	return 0;
 }

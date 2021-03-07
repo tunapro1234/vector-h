@@ -49,10 +49,25 @@
  * TYPE vector_##TYPE##_read(const vector_##TYPE##_t *self, size_t index);
  * 	vektörün indexinci elemanının değerini döndürür
  * 
+ * 
+ * void vector_##TYPE##_bubble_sort(vector_##TYPE##_t *self, TYPE* (*key_func)(TYPE*, TYPE*));
+ * void vector_##TYPE##_swap(vector_##TYPE##_t *self, size_t index1, size_t index2);
+ * bool vector_##TYPE##_insert_p(vector_##TYPE##_t *self, size_t index, TYPE *value);
+ * bool vector_##TYPE##_insert(vector_##TYPE##_t *self, size_t index, TYPE value);
+ * void vector_##TYPE##_shift_r(vector_##TYPE##_t *self);
+ * void vector_##TYPE##_shift_l(vector_##TYPE##_t *self);
+ * void vector_##TYPE##_reverse(vector_##TYPE##_t *self);
 */
 
+int* vector_int_sort_example(int *a, int *b);
 
-#define vector_t(TYPE)					\
+int* vector_int_sort_example(int *a, int *b) {
+	/* büyük olanı döndürüyor */
+	return (*a > *b) ? a : b;
+}
+
+
+#define create_vector_t(TYPE)			\
 	typedef struct vector_##TYPE##_t{	\
 		TYPE *start, *end, *capacity;	\
 	} vector_##TYPE##_t;				\
@@ -77,7 +92,17 @@
 	TYPE *vector_##TYPE##_get(vector_##TYPE##_t *self, size_t index); 		\
 	TYPE vector_##TYPE##_read(const vector_##TYPE##_t *self, size_t index); \
 \
-/********************************************************************************/ \
+\
+	void vector_##TYPE##_bubble_sort(vector_##TYPE##_t *self, TYPE* (*key_func)(TYPE*, TYPE*));	\
+	void vector_##TYPE##_swap(vector_##TYPE##_t *self, size_t index1, size_t index2);			\
+	bool vector_##TYPE##_insert_p(vector_##TYPE##_t *self, size_t index, TYPE *value);			\
+	bool vector_##TYPE##_insert(vector_##TYPE##_t *self, size_t index, TYPE value);				\
+\
+	void vector_##TYPE##_shift_r(vector_##TYPE##_t *self);	\
+	void vector_##TYPE##_shift_l(vector_##TYPE##_t *self);	\
+	void vector_##TYPE##_reverse(vector_##TYPE##_t *self);	\
+\
+/********************************************************************************/	\
 \
 	vector_##TYPE##_t* vector_##TYPE##_init_h(size_t capacity) { 									\
 		vector_##TYPE##_t *new_vector = (vector_##TYPE##_t *)malloc(sizeof(vector_##TYPE##_t));  	\
@@ -178,6 +203,71 @@
 \
 	TYPE *vector_##TYPE##_get(vector_##TYPE##_t *self, size_t index) { return self->start + index; } 			\
 	TYPE vector_##TYPE##_read(const vector_##TYPE##_t *self, size_t index) { return *(self->start + index); } 	\
+\
+\
+	void vector_##TYPE##_swap(vector_##TYPE##_t *self, size_t index1, size_t index2) {	\
+		TYPE tmp = *vector_##TYPE##_get(self, index1);									\
+		*vector_##TYPE##_get(self, index1) = *vector_##TYPE##_get(self, index2);		\
+		*vector_##TYPE##_get(self, index2) = tmp;										\
+	}	\
+\
+	bool vector_##TYPE##_insert_p(vector_##TYPE##_t *self, size_t index, TYPE *value) {	\
+		size_t i, length;																\
+		if (self->end == self->capacity)												\
+			if (vector_##TYPE##_extend_capacity(self) == False)							\
+				return False;															\
+		\
+		length = vector_##TYPE##_length(self);											\
+		for (i = length-1; i >= index; i--)												\
+			*vector_##TYPE##_get(self, i+1) = *vector_##TYPE##_get(self, i);			\
+		memcpy(vector_##TYPE##_get(self, index), value, sizeof(TYPE));					\
+		self->end++;																	\
+		return True;																	\
+	}	\
+\
+	bool vector_##TYPE##_insert(vector_##TYPE##_t *self, size_t index, TYPE value) {	\
+		size_t i, length;																\
+		if (self->end == self->capacity)												\
+			if (vector_##TYPE##_extend_capacity(self) == False)							\
+				return False;															\
+		\
+		length = vector_##TYPE##_length(self);											\
+		for (i = length-1; i >= index; i--)												\
+			*vector_##TYPE##_get(self, i+1) = *vector_##TYPE##_get(self, i);			\
+		*vector_##TYPE##_get(self, index) = value;										\
+		self->end++;																	\
+		return True;																	\
+	}	\
+\
+	void vector_##TYPE##_shift_r(vector_##TYPE##_t *self) {						\
+		size_t i, last_index = vector_##TYPE##_length(self)-1;					\
+		TYPE tmp = *vector_##TYPE##_get(self, last_index);						\
+		for (i = last_index-1; i >= 0; i--)										\
+			*vector_##TYPE##_get(self, i+1) = *vector_##TYPE##_get(self, i);	\
+		*vector_##TYPE##_get(self, 0) = tmp;									\
+	}	\
+\
+	void vector_##TYPE##_shift_l(vector_##TYPE##_t *self) {						\
+		size_t i, length = vector_##TYPE##_length(self);						\
+		TYPE tmp = *vector_##TYPE##_get(self, 0);								\
+		for (i = 1; i < length; i++)											\
+			*vector_##TYPE##_get(self, i-1) = *vector_##TYPE##_get(self, i);	\
+		*vector_##TYPE##_get(self, length-1) = tmp;								\
+	}	\
+\
+	void vector_##TYPE##_reverse(vector_##TYPE##_t *self) {	\
+		size_t i, length = vector_##TYPE##_length(self);	\
+		for (i = 0; i < length/2; i++)						\
+			vector_##TYPE##_swap(self, i, length-1-i);		\
+	}	\
+\
+	void vector_##TYPE##_bubble_sort(vector_##TYPE##_t *self, TYPE* (*key_func)(TYPE*, TYPE*)){								\
+	size_t i, j, last_index = vector_##TYPE##_length(self)-1;																\
+	for (i = 0; i < last_index; i++)																						\
+		for (j = 0; j < last_index-i; j++)																					\
+           	if ( vector_##TYPE##_get(self, j) == key_func(vector_##TYPE##_get(self, j), vector_##TYPE##_get(self, j+1)) )	\
+              	vector_##TYPE##_swap(self, j, j+1);																			\
+}	\
 
 
 #endif

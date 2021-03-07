@@ -32,11 +32,20 @@ const int *vector_int_p_read(const vector_int_t *self, size_t index);
 /* 
  * 		indexe ekleme
  * 		ters çevirme
- * 		sıralama
  * 		shift
+ * 		sıralama
  * 		swap
  * 
  */
+
+void vector_int_bubble_sort(vector_int_t *self, int* (*key_func)(int*, int*));
+void vector_int_swap(vector_int_t *self, size_t index1, size_t index2);
+bool vector_int_insert_p(vector_int_t *self, size_t index, int *value);
+bool vector_int_insert(vector_int_t *self, size_t index, int value);
+void vector_int_shift_r(vector_int_t *self);
+void vector_int_shift_l(vector_int_t *self);
+void vector_int_reverse(vector_int_t *self);
+int* sort_example(int* a, int* b);
 
 int* sort_example(int* a, int* b) {
 	/* büyük olanı döndürüyor */

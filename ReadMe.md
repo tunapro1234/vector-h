@@ -17,7 +17,7 @@ vektörün kapasitesi dolunca kapasiteyi reallocla 2 katına çıkarıyor
 ```c
 #include "vector.h"
 
-vector_t(int);
+create_vector_t(int);
 
 int main(){
     /* kapasitesi 10 * 4 olan bir vektör oluşturduk*/
