@@ -1,8 +1,8 @@
 #include "../main.h"
 
-typedef struct vector_int_t{	\
-    int *start, *end, *capacity;	\
-} vector_int_t;				\
+typedef struct vector_int_t{
+    int *start, *end, *capacity;
+} vector_int_t;
 
 /********************************************************************************/
 
