@@ -69,11 +69,11 @@
 	vector_##TYPE##_t vector_##TYPE##_move(vector_##TYPE##_t *self); 			\
 	vector_##TYPE##_t* vector_##TYPE##_copy_h(const vector_##TYPE##_t *self);	\
 	vector_##TYPE##_t vector_##TYPE##_copy(const vector_##TYPE##_t *self); 		\
- \
+\
 	bool vector_##TYPE##_extend_capacity(vector_##TYPE##_t *self); 			\
 	bool vector_##TYPE##_push_back(vector_##TYPE##_t *self, TYPE data); 	\
 	bool vector_##TYPE##_p_push_back(vector_##TYPE##_t *self, TYPE *data); 	\
-	 \
+\
 	TYPE *vector_##TYPE##_get(vector_##TYPE##_t *self, size_t index); 		\
 	TYPE vector_##TYPE##_read(const vector_##TYPE##_t *self, size_t index); \
 \
