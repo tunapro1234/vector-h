@@ -1,4 +1,4 @@
-# Basit bir vektör implementasyonu
+# Basit bir vektör implementasyonu (C89)
 Sınavlardan sonra debug ve release için ikiye ayırabilirim
 <br>
 
