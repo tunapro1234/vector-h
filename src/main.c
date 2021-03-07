@@ -1,7 +1,8 @@
 
 #include "main.h"
 
-#include "test/vector_int_test.h"
+#include "vector.h"
+
 /*
  * vector_int_t* vector_int_init_h(size_t capacity);
  * vector_int_t vector_int_init(size_t capacity);
@@ -22,10 +23,12 @@
  * 
  * int *vector_int_get(vector_int_t *self, size_t index);
  * int vector_int_read(const vector_int_t *self, size_t index);
- * const int *vector_int_p_read(const vector_int_t *self, size_t index);
 */
 
+vector_t(int)
+
 int main() {
+	printf("aa\n");
 	vector_int_t v1 = vector_int_init(5);
 	printf("%u, %u\n", vector_int_capacity(&v1), vector_int_length(&v1));
 	
@@ -47,10 +50,6 @@ int main() {
 
 	for (int i = 0; i < vector_int_size(v2); i++)
 		printf("%d ", *vector_int_get(v2, i));
-	printf("\n");
-	
-	for (int i = 0; i < vector_int_size(v2); i++)
-		printf("%d ", *vector_int_p_read(v2, i));
 	printf("\n");
 
 	return 0;
