@@ -22,7 +22,7 @@ int main(){
     return 0;
 }
 ```
-vector_t(type) tan sonra ; gerekmiyor ama olsun.
+create_vector_t(type) tan sonra ; gerekmiyor ama olsun.
 
 sonradan oluşturulan structlar için de çalışır herhalde.
 
