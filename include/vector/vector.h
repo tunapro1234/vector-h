@@ -40,7 +40,7 @@
  * bool vector_##NAME##_push_back(vector_##NAME *self, TYPE data);
  * 	vektörün sonuna eleman ekler
  * 
- * bool vector_##NAME##_p_push_back(vector_##NAME *self, TYPE *data);
+ * bool vector_##NAME##_push_back_p(vector_##NAME *self, TYPE *data);
  * 	vektörün sonuna eleman ekler, pointer alıyor
  * 
  * TYPE *vector_##NAME##_get(vector_##NAME *self, size_t index);
@@ -99,7 +99,7 @@ int* vector_int_sort_example(int *a, int *b) {
 \
 	bool vector_##NAME##_extend_capacity(vector_##NAME *self); 			\
 	bool vector_##NAME##_push_back(vector_##NAME *self, TYPE data); 	\
-	bool vector_##NAME##_p_push_back(vector_##NAME *self, TYPE *data); 	\
+	bool vector_##NAME##_push_back_p(vector_##NAME *self, TYPE *data); 	\
 \
 	TYPE *vector_##NAME##_get(vector_##NAME *self, size_t index); 		\
 	TYPE vector_##NAME##_read(const vector_##NAME *self, size_t index); \
@@ -203,7 +203,7 @@ int* vector_int_sort_example(int *a, int *b) {
 		return True; 														\
 	} 	\
 \
-	bool vector_##NAME##_p_push_back(vector_##NAME *self, TYPE *data) { \
+	bool vector_##NAME##_push_back_p(vector_##NAME *self, TYPE *data) { \
 		if (self->end == self->capacity){ 									\
 			if (vector_##NAME##_extend_capacity(self) == False) 			\
 				return False; 												\
@@ -230,8 +230,8 @@ int* vector_int_sort_example(int *a, int *b) {
 				return False;															\
 		\
 		length = vector_##NAME##_length(self);											\
-		for (i = length-1; i >= index; i--)												\
-			*vector_##NAME##_get(self, i+1) = *vector_##NAME##_get(self, i);			\
+		for (i = length; i > index; i--)												\
+			*vector_##NAME##_get(self, i) = *vector_##NAME##_get(self, i-1);			\
 		memcpy(vector_##NAME##_get(self, index), value, sizeof(TYPE));					\
 		self->end++;																	\
 		return True;																	\

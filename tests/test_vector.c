@@ -50,7 +50,7 @@ void test_vector_get_read(cu_test_t *tc);
 void test_vector_move(cu_test_t *tc);
 void test_vector_copy(cu_test_t *tc);
 void test_vector_expand(cu_test_t *tc);
-void test_vector_ptr_push_back(cu_test_t *tc);
+void test_vector_push_back_ptr(cu_test_t *tc);
 void test_vector_bubble_sort(cu_test_t *tc);
 void test_vector_swap(cu_test_t *tc);
 void test_vector_insert(cu_test_t *tc);
@@ -66,7 +66,7 @@ cu_suite_t* test_vector_get_suite() {
 	SUITE_ADD_TEST(suite, test_vector_move			);
 	SUITE_ADD_TEST(suite, test_vector_copy			);
 	SUITE_ADD_TEST(suite, test_vector_expand		);
-	SUITE_ADD_TEST(suite, test_vector_ptr_push_back	);
+	SUITE_ADD_TEST(suite, test_vector_push_back_ptr	);
 	SUITE_ADD_TEST(suite, test_vector_bubble_sort	);
 	SUITE_ADD_TEST(suite, test_vector_swap			);
 	SUITE_ADD_TEST(suite, test_vector_insert		);
@@ -90,8 +90,8 @@ void test_vector_get_read(cu_test_t *tc) {
 void test_vector_move(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2), *v2;
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
-	vector_person_t_p_push_back(v1, p1);
-	vector_person_t_p_push_back(v1, p2);
+	vector_person_t_push_back_p(v1, p1);
+	vector_person_t_push_back_p(v1, p2);
 	
 	v2 = vector_person_t_move_h(v1);
 	
@@ -107,8 +107,8 @@ void test_vector_move(cu_test_t *tc) {
 void test_vector_copy(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2), *v2;
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
-	vector_person_t_p_push_back(v1, p1);
-	vector_person_t_p_push_back(v1, p2);
+	vector_person_t_push_back_p(v1, p1);
+	vector_person_t_push_back_p(v1, p2);
 	
 	v2 = vector_person_t_copy_h(v1);
 	
@@ -124,11 +124,11 @@ void test_vector_expand(cu_test_t *tc) {
 	for (i = 0; i < 10; i++) cu_assert_int_equals(tc, i, vector_int_read(&v1, i));
 }
 
-void test_vector_ptr_push_back(cu_test_t *tc) {
+void test_vector_push_back_ptr(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2);
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
-	vector_person_t_p_push_back(v1, p1);
-	vector_person_t_p_push_back(v1, p2);
+	vector_person_t_push_back_p(v1, p1);
+	vector_person_t_push_back_p(v1, p2);
 }
 
 void test_vector_bubble_sort(cu_test_t *tc) {

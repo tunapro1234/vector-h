@@ -1,10 +1,6 @@
 #include "../../main.h"
 
 /*
- * unit test için kütüphane bul ya da kendin yaz (vs code desteklerse daha iyi)
- * -ansi -pedantic -Wall iken çıkan warningleri düzelt
- * kütüphane için kuruluma başla
- * folder düzenle
  * merge sort
  * (binary ve linear) find
  * 
