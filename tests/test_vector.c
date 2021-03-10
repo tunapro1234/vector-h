@@ -33,8 +33,8 @@ typedef struct person_t {
 	size_t age;
 } person_t;
 
-create_vector_t(person_t, person_t);
-create_vector_t(int, int);
+create_vector_t(int, 	  vector_int_t   );
+create_vector_t(person_t, vector_person_t);
 
 person_t* person_new() { return (person_t *)malloc(sizeof(person_t)); }
 

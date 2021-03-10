@@ -12,7 +12,7 @@ vektörün kapasitesi dolunca kapasiteyi reallocla 2 katına çıkarıyor
 ```c
 #include "vector.h"
 
-create_vector_t(int_t, int);
+create_vector_t(int, vector_int_t);
 
 int main(){
     /* kapasitesi 10 * 4 olan bir vektör oluşturduk */
@@ -22,7 +22,7 @@ int main(){
     return 0;
 }
 ```
-create_vector_t(type) tan sonra ; gerekmiyor ama olsun. (Artık gerekiyor)
+create_vector_t(TYPE, NAME) tan sonra ; gerekmiyor ama olsun. (Artık gerekiyor)
 
 sonradan oluşturulan structlar için de çalışır herhalde. (Çalışıyor)
 
