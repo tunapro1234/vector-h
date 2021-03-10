@@ -70,7 +70,7 @@ cu_suite_t* test_vector_get_suite() {
 	SUITE_ADD_TEST(suite, test_vector_bubble_sort	);
 	SUITE_ADD_TEST(suite, test_vector_swap			);
 	SUITE_ADD_TEST(suite, test_vector_insert		);
-	/* SUITE_ADD_TEST(suite, test_vector_insert_ptr	); */
+	SUITE_ADD_TEST(suite, test_vector_insert_ptr	); 
 	SUITE_ADD_TEST(suite, test_vector_shift_r		);
 	SUITE_ADD_TEST(suite, test_vector_shift_l		);
 	SUITE_ADD_TEST(suite, test_vector_reverse		);
@@ -165,17 +165,17 @@ void test_vector_insert(cu_test_t *tc) {
 	for (i = 1; i < 4; i++) cu_assert_int_equals(tc, i - 1, vector_int_read(v1, i));
 }
 
-/*
+
 void test_vector_insert_ptr(cu_test_t *tc) {
 	size_t i;
 	vector_person_t *v1 = vector_person_t_init_h(3);
-	for (i = 0; i < 3; i++) vector_person_t_push_back(v1, );
-	vector_int_insert(v1, 0, 0);
+	for (i = 0; i < 3; i++) vector_person_t_push_back_p(v1, person_init("a", i));
+	vector_person_t_insert_p(v1, 0, person_init("a", 0));
 
-	cu_assert_int_equals(tc, 0, vector_int_read(v1, 0));
-	for (i = 1; i < 4; i++) cu_assert_int_equals(tc, i - 1, vector_int_read(v1, i));
+	cu_assert_int_equals(tc, 0, vector_person_t_read(v1, 0).age);
+	for (i = 1; i < 4; i++) cu_assert_int_equals(tc, i - 1, vector_person_t_read(v1, i).age);
 }
-*/
+
 
 void test_vector_shift_r(cu_test_t *tc) {
 	size_t i;
