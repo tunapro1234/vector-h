@@ -10,7 +10,7 @@
  * vector_##TYPE vector_##TYPE##_init(size_t capacity);
  * 	3 pointer kopyalasak nolur sanki
  * 
- * void* vector_##TYPE##_destroy(vector_##TYPE *self);
+ * void vector_##TYPE##_destroy(vector_##TYPE *self);
  * 	free(self->start); obje heapte oluştuturldaysa ayrıca temizlenmesi gerekiyor
  * 
  * size_t vector_##TYPE##_capacity(const vector_##TYPE *self);
@@ -86,7 +86,7 @@ int* vector_int_sort_example(int *a, int *b) {
 \
 	vector_##TYPE* vector_##TYPE##_init_h(size_t capacity); \
 	vector_##TYPE vector_##TYPE##_init(size_t capacity); 	\
-	void* vector_##TYPE##_destroy(vector_##TYPE *self); 	\
+	void vector_##TYPE##_destroy(vector_##TYPE *self); 	\
 \
 	size_t vector_##TYPE##_capacity(const vector_##TYPE *self); \
 	size_t vector_##TYPE##_length(const vector_##TYPE *self); 	\
@@ -134,7 +134,7 @@ int* vector_int_sort_example(int *a, int *b) {
 		return new_vector; 													\
 	} 	\
 \
-	void* vector_##TYPE##_destroy(vector_##TYPE *self) {  	\
+	void vector_##TYPE##_destroy(vector_##TYPE *self) {  	\
 		free(self->start); 										\
 	} 	\
 \
