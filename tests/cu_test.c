@@ -286,6 +286,7 @@ void cu_suite_run(cu_suite_t* test_suite)
 	for (i = 0 ; i < test_suite->count ; ++i)
 	{
 		cu_test_t* test_case = test_suite->list[i];
+		printf("Running: %s()...\n", test_case->name);
 		cu_test_run(test_case);
 		if (test_case->failed) { test_suite->fail_count += 1; }
 	}

@@ -244,8 +244,8 @@ int* vector_int_sort_example(int *a, int *b) {
 				return False;															\
 		\
 		length = vector_##TYPE##_length(self);											\
-		for (i = length-1; i >= index; i--)												\
-			*vector_##TYPE##_get(self, i+1) = *vector_##TYPE##_get(self, i);			\
+		for (i = length; i > index; i--)												\
+			*vector_##TYPE##_get(self, i) = *vector_##TYPE##_get(self, i-1);			\
 		*vector_##TYPE##_get(self, index) = value;										\
 		self->end++;																	\
 		return True;																	\
@@ -254,8 +254,8 @@ int* vector_int_sort_example(int *a, int *b) {
 	void vector_##TYPE##_shift_r(vector_##TYPE *self) {						\
 		size_t i, last_index = vector_##TYPE##_length(self)-1;					\
 		TYPE tmp = *vector_##TYPE##_get(self, last_index);						\
-		for (i = last_index-1; i >= 0; i--)										\
-			*vector_##TYPE##_get(self, i+1) = *vector_##TYPE##_get(self, i);	\
+		for (i = last_index; i > 0; i--)										\
+			*vector_##TYPE##_get(self, i) = *vector_##TYPE##_get(self, i-1);	\
 		*vector_##TYPE##_get(self, 0) = tmp;									\
 	}	\
 \
