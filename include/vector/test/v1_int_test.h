@@ -9,10 +9,7 @@
  * (binary ve linear) find
  * 
  * debug ve release olarak ikiye ayır
- * POINTERLER İÇİN VECTOR OLUŞTURAMIYORUZ
- * 		create_vector_t(NAME, TYPE) yapıcam
  * 
- * sona noktalı virgül gelmesini sağlamam lazım
  */
 
 typedef struct vector_int{	
