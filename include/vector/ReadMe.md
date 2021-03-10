@@ -62,7 +62,7 @@ vektörü kopyalar
 vektörün kapasitesini realloc yarıdımıyla 2 katına çıkarır
  
 #### bool vector_##NAME##_push_back(vector_##NAME##_t *self, TYPE data);
- 	vektörün sonuna eleman ekler
+vektörün sonuna eleman ekler
  
 #### bool vector_##NAME##_p_push_back(vector_##NAME##_t *self, TYPE *data);
 vektörün sonuna eleman ekler, pointer alıyor
