@@ -16,7 +16,7 @@ create_vector_t(int_t, int);
 
 int main(){
     /* kapasitesi 10 * 4 olan bir vektör oluşturduk */
-    vector_int_t v1 = vector_int_init(10);
+    vector_int_t v1 = vector_int_t_init(10);
     vector_int_t_push_back(&v1, 20);
     printf("%d\n", *vector_int_t_get(&v1, 0));
     return 0;
