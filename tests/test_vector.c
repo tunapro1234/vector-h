@@ -95,13 +95,13 @@ void test_vector_move(cu_test_t *tc) {
 	
 	v2 = vector_person_t_move_h(v1);
 	
-	cu_assert_ptr_not_null(tc, v2->capacity);
-	cu_assert_ptr_not_null(tc, v2->start);
-	cu_assert_ptr_not_null(tc, v2->end);
+	cu_assert_ptr_not_null(tc, v2->_capacity);
+	cu_assert_ptr_not_null(tc, v2->_start);
+	cu_assert_ptr_not_null(tc, v2->_end);
 	
-	cu_assert_ptr_null(tc, v1->capacity);
-	cu_assert_ptr_null(tc, v1->start);
-	cu_assert_ptr_null(tc, v1->end);
+	cu_assert_ptr_null(tc, v1->_capacity);
+	cu_assert_ptr_null(tc, v1->_start);
+	cu_assert_ptr_null(tc, v1->_end);
 }
 
 void test_vector_copy(cu_test_t *tc) {
@@ -112,9 +112,9 @@ void test_vector_copy(cu_test_t *tc) {
 	
 	v2 = vector_person_t_copy_h(v1);
 	
-	cu_assert_true(tc, v1->capacity != v2->capacity);
-	cu_assert_true(tc, v1->start != v2->start);
-	cu_assert_true(tc, v1->end != v2->end);
+	cu_assert_true(tc, v1->_capacity != v2->_capacity);
+	cu_assert_true(tc, v1->_start != v2->_start);
+	cu_assert_true(tc, v1->_end != v2->_end);
 }
 
 void test_vector_expand(cu_test_t *tc) {
