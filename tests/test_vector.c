@@ -19,14 +19,17 @@
  * ptr push back
  * get - read
  * 
- * bubble sort
  * swap 
  * insert
  * insert ptr
  * shift r
  * shift l
  * reverse
+ * bubble sort
+ * merge sort
  */
+
+const size_t default_test_len = 50;
 
 typedef struct person_t {
 	char* name;
@@ -51,13 +54,15 @@ void test_vector_move(cu_test_t *tc);
 void test_vector_copy(cu_test_t *tc);
 void test_vector_expand(cu_test_t *tc);
 void test_vector_push_back_ptr(cu_test_t *tc);
-void test_vector_bubble_sort(cu_test_t *tc);
 void test_vector_swap(cu_test_t *tc);
 void test_vector_insert(cu_test_t *tc);
 void test_vector_insert_ptr(cu_test_t *tc);
 void test_vector_shift_r(cu_test_t *tc);
 void test_vector_shift_l(cu_test_t *tc);
 void test_vector_reverse(cu_test_t *tc);
+void test_vector_bubble_sort(cu_test_t *tc);
+void test_vector_merge_sort(cu_test_t *tc);
+
 
 cu_suite_t* test_vector_get_suite() {
 	cu_suite_t* suite = cu_suite_new();
@@ -67,25 +72,30 @@ cu_suite_t* test_vector_get_suite() {
 	SUITE_ADD_TEST(suite, test_vector_copy			);
 	SUITE_ADD_TEST(suite, test_vector_expand		);
 	SUITE_ADD_TEST(suite, test_vector_push_back_ptr	);
-	SUITE_ADD_TEST(suite, test_vector_bubble_sort	);
 	SUITE_ADD_TEST(suite, test_vector_swap			);
 	SUITE_ADD_TEST(suite, test_vector_insert		);
 	SUITE_ADD_TEST(suite, test_vector_insert_ptr	); 
 	SUITE_ADD_TEST(suite, test_vector_shift_r		);
 	SUITE_ADD_TEST(suite, test_vector_shift_l		);
 	SUITE_ADD_TEST(suite, test_vector_reverse		);
+	SUITE_ADD_TEST(suite, test_vector_bubble_sort	);
+	SUITE_ADD_TEST(suite, test_vector_merge_sort	);
 	
 	return suite;
 }
 
+
 void test_vector_get_read(cu_test_t *tc) {
-	int i;
-	vector_int v1 = vector_int_init(10);
-	for (i = 0; i < 10; i++) {
-		vector_int_push_back(&v1, i);
-		cu_assert_int_equals(tc, i, vector_int_read(&v1, i));
+#define LEN default_test_len
+	size_t i;
+	vector_int_t v1 = vector_int_t_init(LEN);
+	for (i = 0; i < LEN; i++) {
+		vector_int_t_push_back(&v1, i);
+		cu_assert_int_equals(tc, i, vector_int_t_read(&v1, i));
 	}
+#undef LEN
 }
+
 
 void test_vector_move(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2), *v2;
@@ -104,6 +114,7 @@ void test_vector_move(cu_test_t *tc) {
 	cu_assert_ptr_null(tc, v1->_end);
 }
 
+
 void test_vector_copy(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2), *v2;
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
@@ -117,12 +128,16 @@ void test_vector_copy(cu_test_t *tc) {
 	cu_assert_true(tc, v1->_end != v2->_end);
 }
 
+
 void test_vector_expand(cu_test_t *tc) {
+#define LEN default_test_len
 	size_t i;
-	vector_int v1 = vector_int_init(5);
-	for (i = 0; i < 10; i++) vector_int_push_back(&v1, i);
-	for (i = 0; i < 10; i++) cu_assert_int_equals(tc, i, vector_int_read(&v1, i));
+	vector_int_t v1 = vector_int_t_init(LEN);
+	for (i = 0; i < LEN * 2; i++) vector_int_t_push_back(&v1, i);
+	for (i = 0; i < LEN * 2; i++) cu_assert_int_equals(tc, i, vector_int_t_read(&v1, i));
+#undef LEN
 }
+
 
 void test_vector_push_back_ptr(cu_test_t *tc) {
 	vector_person_t *v1 = vector_person_t_init_h(2);
@@ -131,78 +146,111 @@ void test_vector_push_back_ptr(cu_test_t *tc) {
 	vector_person_t_push_back_p(v1, p2);
 }
 
-void test_vector_bubble_sort(cu_test_t *tc) {
-	size_t i;
-	vector_int *v_ex = vector_int_init_h(6);
-	vector_int *v_ac = vector_int_init_h(6);
-	
-	for (i = 0; i < 6; i++) vector_int_push_back(v_ex, i);
-	for (i = 6; i > 0; i--) vector_int_push_back(v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
-	
-	vector_int_bubble_sort(v_ac, vector_int_sort_example);
-	for (i = 0; i < vector_int_length(v_ex); i++) 
-		cu_assert_int_equals(tc, vector_int_read(v_ex, i), vector_int_read(v_ac, i));
-}
 
 void test_vector_swap(cu_test_t *tc) {
 	size_t i;
-	vector_int *v1 = vector_int_init_h(3);
-	for (i = 0; i < 3; i++) vector_int_push_back(v1, i);
-	vector_int_swap(v1, 0, 2);
+	vector_int_t *v1 = vector_int_t_init_h(3);
+	for (i = 0; i < 3; i++) vector_int_t_push_back(v1, i);
+	vector_int_t_swap(v1, 0, 2);
 	
-	cu_assert_int_equals(tc, vector_int_read(v1, 0), 2);
-	cu_assert_int_equals(tc, vector_int_read(v1, 1), 1);
-	cu_assert_int_equals(tc, vector_int_read(v1, 3), 0);
+	cu_assert_int_equals(tc, vector_int_t_read(v1, 0), 2);
+	cu_assert_int_equals(tc, vector_int_t_read(v1, 1), 1);
+	cu_assert_int_equals(tc, vector_int_t_read(v1, 2), 0); 
 }
 
-void test_vector_insert(cu_test_t *tc) {
-	size_t i;
-	vector_int *v1 = vector_int_init_h(3);
-	for (i = 0; i < 3; i++) vector_int_push_back(v1, i);
-	vector_int_insert(v1, 0, 0);
 
-	cu_assert_int_equals(tc, 0, vector_int_read(v1, 0));
-	for (i = 1; i < 4; i++) cu_assert_int_equals(tc, i - 1, vector_int_read(v1, i));
+void test_vector_insert(cu_test_t *tc) {
+#define LEN default_test_len
+	size_t i;
+	vector_int_t *v1 = vector_int_t_init_h(LEN);
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+	vector_int_t_insert(v1, 0, 0);
+
+	cu_assert_int_equals(tc, 0, vector_int_t_read(v1, 0));
+	for (i = 1; i < (LEN+1); i++) cu_assert_int_equals(tc, i - 1, vector_int_t_read(v1, i));
+#undef LEN
 }
 
 
 void test_vector_insert_ptr(cu_test_t *tc) {
+#define LEN default_test_len
 	size_t i;
-	vector_person_t *v1 = vector_person_t_init_h(3);
-	for (i = 0; i < 3; i++) vector_person_t_push_back_p(v1, person_init("a", i));
+	vector_person_t *v1 = vector_person_t_init_h(LEN);
+	for (i = 0; i < LEN; i++) vector_person_t_push_back_p(v1, person_init("a", i));
 	vector_person_t_insert_p(v1, 0, person_init("a", 0));
 
 	cu_assert_int_equals(tc, 0, vector_person_t_read(v1, 0).age);
-	for (i = 1; i < 4; i++) cu_assert_int_equals(tc, i - 1, vector_person_t_read(v1, i).age);
+	for (i = 1; i < (LEN+1); i++) cu_assert_int_equals(tc, i - 1, vector_person_t_read(v1, i).age);
+#undef LEN
 }
 
 
 void test_vector_shift_r(cu_test_t *tc) {
+#define LEN default_test_len
 	size_t i;
-	vector_int *v1 = vector_int_init_h(10);
-	for (i = 0; i < 10; i++) vector_int_push_back(v1, i);
-	vector_int_shift_r(v1);
+	vector_int_t *v1 = vector_int_t_init_h(LEN);
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+	vector_int_t_shift_r(v1);
 	
-	cu_assert_int_equals(tc, 9, vector_int_read(v1, 0));
-	for (i = 1; i < 10; i++) cu_assert_int_equals(tc, i - 1, vector_int_read(v1, i));
+	cu_assert_int_equals(tc, (LEN-1), vector_int_t_read(v1, 0));
+	for (i = 1; i < LEN; i++) cu_assert_int_equals(tc, i - 1, vector_int_t_read(v1, i));
+#undef LEN
 }
+
 
 void test_vector_shift_l(cu_test_t *tc) {
+#define LEN default_test_len
 	size_t i;
-	vector_int *v1 = vector_int_init_h(10);
-	for (i = 0; i < 10; i++) vector_int_push_back(v1, i);
-	vector_int_shift_l(v1);
+	vector_int_t *v1 = vector_int_t_init_h(LEN);
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+	vector_int_t_shift_l(v1);
 
-	cu_assert_int_equals(tc, 0, vector_int_read(v1, 9));
-	for (i = 0; i < 9; i++) cu_assert_int_equals(tc, i + 1, vector_int_read(v1, i));
+	cu_assert_int_equals(tc, 0, vector_int_t_read(v1, (LEN-1)));
+	for (i = 0; i < (LEN-1); i++) cu_assert_int_equals(tc, i + 1, vector_int_t_read(v1, i));
+#undef LEN
 }
 
+
 void test_vector_reverse(cu_test_t *tc) {
+#define LEN default_test_len
 	size_t i;
-	vector_int *v1 = vector_int_init_h(10);
-	for (i = 0; i < 10; i++) vector_int_push_back(v1, i);
-	vector_int_reverse(v1);
+	vector_int_t *v1 = vector_int_t_init_h(LEN);
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+	vector_int_t_reverse(v1);
 	
-	for (i = 0; i < 10; i++) 
-		cu_assert_int_equals(tc, 9-i, vector_int_read(v1, i));
+	for (i = 0; i < LEN; i++) 
+		cu_assert_int_equals(tc, (LEN-1)-i, vector_int_t_read(v1, i));
+#undef LEN
+}
+
+
+void test_vector_bubble_sort(cu_test_t *tc) {
+#define LEN default_test_len
+	size_t i;
+	vector_int_t *v_ex = vector_int_t_init_h(LEN);
+	vector_int_t *v_ac = vector_int_t_init_h(LEN);
+	
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v_ex, i);
+	for (i = LEN; i > 0; i--) vector_int_t_push_back(v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
+	
+	vector_int_t_bubble_sort(v_ac, s32_max_func);
+	for (i = 0; i < LEN; i++) 
+		cu_assert_int_equals(tc, vector_int_t_read(v_ex, i), vector_int_t_read(v_ac, i));
+#undef LEN
+}
+
+
+void test_vector_merge_sort(cu_test_t *tc) {
+#define LEN default_test_len
+	size_t i;
+	vector_int_t *v_ex = vector_int_t_init_h(LEN);
+	vector_int_t *v_ac = vector_int_t_init_h(LEN);
+	
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v_ex, i);
+	for (i = LEN; i > 0; i--) vector_int_t_push_back(v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
+	
+	vector_int_t_merge_sort(v_ac, s32_max_func);
+	for (i = 0; i < LEN; i++) 
+		cu_assert_int_equals(tc, vector_int_t_read(v_ex, i), vector_int_t_read(v_ac, i));
+#undef LEN
 }

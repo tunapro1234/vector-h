@@ -50,9 +50,6 @@
  * 	vektörün indexinci elemanının değerini döndürür
  * 
  * 
- * void NAME##_bubble_sort(NAME *self, TYPE* (*key_func)(TYPE*, TYPE*));
- * 	elemanları bubble sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
- * 
  * void NAME##_swap(NAME *self, size_t index1, size_t index2);
  * 	iki indeksteki elemanları değiştirir
  * 
@@ -71,23 +68,28 @@
  * void NAME##_reverse(NAME *self);
  * 	vektörü ters döndürür
  * 
+ * void __inter_##NAME##_merge_sort(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	merge sort internal
+ * 
+ * void NAME##_merge_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	elemanları merge sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
+ * 
+ * void NAME##_bubble_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	elemanları bubble sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
+ * 
 */
 
 
 typedef enum max_output_t {
 	MO_FIRST_ARG,
 	MO_ARGS_EQUAL,
-	MO_SECOND_ARG,
+	MO_SECOND_ARG
 } max_output_t;
 
 max_output_t s32_max_func(s32* a, s32* b) {
 	if (*a > *b) 		return MO_FIRST_ARG ;
 	else if (*a == *b) 	return MO_ARGS_EQUAL;
 	else 				return MO_SECOND_ARG;
-}
-
-int* vector_int_sort_example(int *a, int *b) {
-	return (*a > *b) ? a : b;
 }
 
 #define create_vector_t(TYPE, NAME)						\
@@ -128,7 +130,7 @@ int* vector_int_sort_example(int *a, int *b) {
 	void NAME##_merge_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));													\
 	void NAME##_bubble_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));												\
 \
-/********************************************************************************/											\
+/****************************************************************************************************/	\
 \
 	NAME* NAME##_init_h(size_t capacity) { 										\
 		NAME *new_vector = (NAME *)malloc(sizeof(NAME)); 						\
