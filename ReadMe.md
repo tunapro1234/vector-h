@@ -15,11 +15,11 @@ vektörün kapasitesi dolunca kapasiteyi reallocla 2 katına çıkarıyor
 create_vector_t(int, vector_int_t);
 
 int main(){
-    /* kapasitesi 10 * 4 olan bir vektör oluşturduk */
-    vector_int_t v1 = vector_int_t_init(10);
-    vector_int_t_push_back(&v1, 20);
-    printf("%d\n", *vector_int_t_get(&v1, 0));
-    return 0;
+	/* kapasitesi 10 * 4 olan bir vektör oluşturduk */
+	vector_int_t v1 = vector_int_t_init(10);
+	vector_int_t_push_back(&v1, 20);
+	printf("%d\n", *vector_int_t_get(&v1, 0));
+	return 0;
 }
 ```
 create_vector_t(TYPE, NAME) tan sonra ; gerekmiyor ama olsun. (Artık gerekiyor)
@@ -51,7 +51,7 @@ typedef enum max_output_t {
 	MO_FIRST_ARG,
 	MO_ARGS_EQUAL,
 	MO_SECOND_ARG,
-    MO_COUNT
+	MO_COUNT
 } max_output_t;
 ```
 (MO_COUNT kullanılmıyor)
