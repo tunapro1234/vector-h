@@ -40,7 +40,7 @@ s32 (int) tipinde eleman bulunduran bir vektöre uygun karşılaştırma fonksiy
 max_output_t s32_max_func(s32* a, s32* b) {
 	if (*a > *b) 		return MO_FIRST_ARG ;
 	else if (*a == *b) 	return MO_ARGS_EQUAL;
-	else 				return MO_SECOND_ARG;
+	else 			return MO_SECOND_ARG;
 }
 ```
 
