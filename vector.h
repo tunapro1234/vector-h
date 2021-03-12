@@ -1,7 +1,7 @@
 #ifndef VECTOR_H_INCLUDED
 #define VECTOR_H_INCLUDED
 
-#include "../main.h"
+#include "main.h"
 
 /*
  * NAME* NAME##_init_h(size_t capacity);
@@ -79,16 +79,16 @@
  * 
  * 
  * size_t NAME##_search_binary(vector_int_t *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));
- * 	
+ * 	düzenlenmiş vektörler için arama
  * 
  * size_t NAME##_search_binary_p(vector_int_t *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));
- * 	
+ * 	düzenlenmiş vektörler için arama (primitive olmayan tiplerin kopyalanması gibi işlerle uğraşmamak için ptr alıyor)
  * 
  * size_t NAME##_search_linear(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));
- * 	
+ * 	düzenlenmemiş vektörler için arama 
  * 
  * size_t NAME##_search_linear_p(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));
- * 	
+ * 	düzenlenmemiş vektörler için arama (primitive olmayan tiplerin kopyalanması gibi işlerle uğraşmamak için ptr alıyor)
  * 	
  * 
  */
@@ -97,7 +97,8 @@
 typedef enum max_output_t {
 	MO_FIRST_ARG,
 	MO_ARGS_EQUAL,
-	MO_SECOND_ARG
+	MO_SECOND_ARG,
+	MO_COUNT
 } max_output_t;
 
 max_output_t s32_max_func(s32* a, s32* b) {

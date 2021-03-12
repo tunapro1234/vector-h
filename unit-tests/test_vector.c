@@ -60,8 +60,8 @@ void test_vector_insert_ptr(cu_test_t *tc);
 void test_vector_shift_r(cu_test_t *tc);
 void test_vector_shift_l(cu_test_t *tc);
 void test_vector_reverse(cu_test_t *tc);
-void test_vector_bubble_sort(cu_test_t *tc);
-void test_vector_merge_sort(cu_test_t *tc);
+void test_vector_sort_bubble(cu_test_t *tc);
+void test_vector_sort_merge(cu_test_t *tc);
 void test_vector_search_linear(cu_test_t *tc);
 void test_vector_search_binary(cu_test_t *tc);
 
@@ -80,8 +80,8 @@ cu_suite_t* test_vector_get_suite() {
 	SUITE_ADD_TEST(suite, test_vector_shift_r			);
 	SUITE_ADD_TEST(suite, test_vector_shift_l			);
 	SUITE_ADD_TEST(suite, test_vector_reverse			);
-	SUITE_ADD_TEST(suite, test_vector_bubble_sort		);
-	SUITE_ADD_TEST(suite, test_vector_merge_sort		);
+	SUITE_ADD_TEST(suite, test_vector_sort_bubble		);
+	SUITE_ADD_TEST(suite, test_vector_sort_merge		);
 	SUITE_ADD_TEST(suite, test_vector_search_linear		);
 	SUITE_ADD_TEST(suite, test_vector_search_binary		);
 	
@@ -228,7 +228,7 @@ void test_vector_reverse(cu_test_t *tc) {
 }
 
 
-void test_vector_bubble_sort(cu_test_t *tc) {
+void test_vector_sort_bubble(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
 	vector_int_t *v_ex = vector_int_t_init_h(LEN);
@@ -244,7 +244,7 @@ void test_vector_bubble_sort(cu_test_t *tc) {
 }
 
 
-void test_vector_merge_sort(cu_test_t *tc) {
+void test_vector_sort_merge(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
 	vector_int_t *v_ex = vector_int_t_init_h(LEN);
