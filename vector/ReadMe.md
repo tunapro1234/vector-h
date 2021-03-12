@@ -2,7 +2,7 @@
 Sınavlardan sonra debug ve release için ikiye ayırabilirim
 <br>
 
-Bir iki özellik daha eklenebilir (merge sort).
+Exception handling geliştirilebilir.
 
 <br>
 vektörün kapasitesi dolunca kapasiteyi reallocla 2 katına çıkarıyor
