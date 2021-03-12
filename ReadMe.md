@@ -15,11 +15,11 @@ vektörün kapasitesi dolunca kapasiteyi reallocla 2 katına çıkarıyor
 create_vector_t(int, vector_int_t);
 
 int main(){
-	/* kapasitesi 10 * 4 olan bir vektör oluşturduk */
-	vector_int_t v1 = vector_int_t_init(10);
-	vector_int_t_push_back(&v1, 20);
-	printf("%d\n", *vector_int_t_get(&v1, 0));
-	return 0;
+    /* kapasitesi 10 * 4 olan bir vektör oluşturduk */
+    vector_int_t v1 = vector_int_t_init(10);
+    vector_int_t_push_back(&v1, 20);
+    printf("%d\n", *vector_int_t_get(&v1, 0));
+    return 0;
 }
 ```
 create_vector_t(TYPE, NAME) tan sonra ; gerekmiyor ama olsun. (Artık gerekiyor)
@@ -38,9 +38,9 @@ s32 (int) tipinde eleman bulunduran bir vektöre uygun karşılaştırma fonksiy
 
 ```c
 max_output_t s32_max_func(s32* a, s32* b) {
-	if (*a > *b) 		return MO_FIRST_ARG ;
-	else if (*a == *b) 	return MO_ARGS_EQUAL;
-	else 			return MO_SECOND_ARG;
+    if (*a > *b) 		return MO_FIRST_ARG ;
+    else if (*a == *b) 	return MO_ARGS_EQUAL;
+    else 			    return MO_SECOND_ARG;
 }
 ```
 
@@ -48,10 +48,10 @@ max_output_t enumu 4 elemana sahip
 
 ```c
 typedef enum max_output_t {
-	MO_FIRST_ARG,
-	MO_ARGS_EQUAL,
-	MO_SECOND_ARG,
-	MO_COUNT
+    MO_FIRST_ARG,
+    MO_ARGS_EQUAL,
+    MO_SECOND_ARG,
+    MO_COUNT
 } max_output_t;
 ```
 (MO_COUNT kullanılmıyor)
