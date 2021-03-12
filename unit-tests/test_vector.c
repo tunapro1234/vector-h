@@ -2,7 +2,7 @@
 #include <ctype.h>
 
 #include "cu_test.h"
-#include "../vector/vector.h"
+#include "../vector.h"
 
 /* 
  * void cu_assert(cu_test* tc, char* message, int condition);
