@@ -1,7 +1,7 @@
 #ifndef VECTOR_H_INCLUDED
 #define VECTOR_H_INCLUDED
 
-#include "main.h"
+#include "../main.h"
 
 /*
  * NAME* NAME##_init_h(size_t capacity);
