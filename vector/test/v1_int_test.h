@@ -1,6 +1,7 @@
 #include "../../main.h"
 
 /*
+ * Yeni fonksiyonları ReadMeye yükle
  * malloc için exception handling
  * debug ve release olarak ikiye ayır
  * 
