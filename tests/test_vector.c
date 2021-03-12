@@ -62,24 +62,28 @@ void test_vector_shift_l(cu_test_t *tc);
 void test_vector_reverse(cu_test_t *tc);
 void test_vector_bubble_sort(cu_test_t *tc);
 void test_vector_merge_sort(cu_test_t *tc);
+void test_vector_search_linear(cu_test_t *tc);
+void test_vector_search_binary(cu_test_t *tc);
 
 
 cu_suite_t* test_vector_get_suite() {
 	cu_suite_t* suite = cu_suite_new();
 	
-	SUITE_ADD_TEST(suite, test_vector_get_read		);
-	SUITE_ADD_TEST(suite, test_vector_move			);
-	SUITE_ADD_TEST(suite, test_vector_copy			);
-	SUITE_ADD_TEST(suite, test_vector_expand		);
-	SUITE_ADD_TEST(suite, test_vector_push_back_ptr	);
-	SUITE_ADD_TEST(suite, test_vector_swap			);
-	SUITE_ADD_TEST(suite, test_vector_insert		);
-	SUITE_ADD_TEST(suite, test_vector_insert_ptr	); 
-	SUITE_ADD_TEST(suite, test_vector_shift_r		);
-	SUITE_ADD_TEST(suite, test_vector_shift_l		);
-	SUITE_ADD_TEST(suite, test_vector_reverse		);
-	SUITE_ADD_TEST(suite, test_vector_bubble_sort	);
-	SUITE_ADD_TEST(suite, test_vector_merge_sort	);
+	SUITE_ADD_TEST(suite, test_vector_get_read			);
+	SUITE_ADD_TEST(suite, test_vector_move				);
+	SUITE_ADD_TEST(suite, test_vector_copy				);
+	SUITE_ADD_TEST(suite, test_vector_expand			);
+	SUITE_ADD_TEST(suite, test_vector_push_back_ptr		);
+	SUITE_ADD_TEST(suite, test_vector_swap				);
+	SUITE_ADD_TEST(suite, test_vector_insert			);
+	SUITE_ADD_TEST(suite, test_vector_insert_ptr		); 
+	SUITE_ADD_TEST(suite, test_vector_shift_r			);
+	SUITE_ADD_TEST(suite, test_vector_shift_l			);
+	SUITE_ADD_TEST(suite, test_vector_reverse			);
+	SUITE_ADD_TEST(suite, test_vector_bubble_sort		);
+	SUITE_ADD_TEST(suite, test_vector_merge_sort		);
+	SUITE_ADD_TEST(suite, test_vector_search_linear		);
+	SUITE_ADD_TEST(suite, test_vector_search_binary		);
 	
 	return suite;
 }
@@ -233,7 +237,7 @@ void test_vector_bubble_sort(cu_test_t *tc) {
 	for (i = 0; i < LEN; i++) vector_int_t_push_back(v_ex, i);
 	for (i = LEN; i > 0; i--) vector_int_t_push_back(v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
 	
-	vector_int_t_bubble_sort(v_ac, s32_max_func);
+	vector_int_t_sort_bubble(v_ac, s32_max_func);
 	for (i = 0; i < LEN; i++) 
 		cu_assert_int_equals(tc, vector_int_t_read(v_ex, i), vector_int_t_read(v_ac, i));
 #undef LEN
@@ -249,8 +253,31 @@ void test_vector_merge_sort(cu_test_t *tc) {
 	for (i = 0; i < LEN; i++) vector_int_t_push_back(v_ex, i);
 	for (i = LEN; i > 0; i--) vector_int_t_push_back(v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
 	
-	vector_int_t_merge_sort(v_ac, s32_max_func);
+	vector_int_t_sort_merge(v_ac, s32_max_func);
 	for (i = 0; i < LEN; i++) 
 		cu_assert_int_equals(tc, vector_int_t_read(v_ex, i), vector_int_t_read(v_ac, i));
 #undef LEN
 }
+
+
+void test_vector_search_linear(cu_test_t *tc) {
+#define LEN default_test_len
+	vector_int_t *v1 = vector_int_t_init_h(LEN); size_t i;
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+
+	for (i = 0; i < LEN; i++) 
+		cu_assert_int_equals(tc, i, vector_int_t_search_linear(v1, i, s32_max_func));
+#undef LEN
+}
+
+
+void test_vector_search_binary(cu_test_t *tc) {
+#define LEN default_test_len
+	vector_int_t *v1 = vector_int_t_init_h(LEN); size_t i;
+	for (i = 0; i < LEN; i++) vector_int_t_push_back(v1, i);
+
+	for (i = 0; i < LEN; i++) 
+		cu_assert_int_equals(tc, i, vector_int_t_search_binary(v1, i, s32_max_func));
+#undef LEN
+}
+

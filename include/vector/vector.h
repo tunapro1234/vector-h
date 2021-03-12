@@ -68,16 +68,30 @@
  * void NAME##_reverse(NAME *self);
  * 	vektörü ters döndürür
  * 
- * void __inter_##NAME##_merge_sort(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*));
+ * void __inter_##NAME##_sort_merge(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*));
  * 	merge sort internal
  * 
- * void NAME##_merge_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
+ * void NAME##_sort_merge(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
  * 	elemanları merge sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
  * 
- * void NAME##_bubble_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
+ * void NAME##_sort_bubble(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));
  * 	elemanları bubble sort algoritması ile sırala (büyük olan elemanı belirlemek için fonksiyon pointerı alıyor)
  * 
-*/
+ * 
+ * size_t NAME##_search_binary(vector_int_t *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	
+ * 
+ * size_t NAME##_search_binary_p(vector_int_t *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	
+ * 
+ * size_t NAME##_search_linear(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	
+ * 
+ * size_t NAME##_search_linear_p(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));
+ * 	
+ * 	
+ * 
+ */
 
 
 typedef enum max_output_t {
@@ -126,9 +140,25 @@ max_output_t s32_max_func(s32* a, s32* b) {
 	void NAME##_shift_l(NAME *self);	\
 	void NAME##_reverse(NAME *self);	\
 \
-	void __inter_##NAME##_merge_sort(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*));	\
-	void NAME##_merge_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));													\
-	void NAME##_bubble_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));												\
+\
+	void __inter_##NAME##_sort_merge	\
+	(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*));			\
+\
+	void NAME##_sort_merge(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));							\
+	void NAME##_sort_bubble(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*));						\
+\
+\
+	size_t NAME##_search_binary														\
+	(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));		\
+\
+	size_t NAME##_search_binary_p													\
+	(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));		\
+\
+	size_t NAME##_search_linear														\
+	(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*));				\
+\
+	size_t NAME##_search_linear_p													\
+	(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*));				\
 \
 /****************************************************************************************************/	\
 \
@@ -289,7 +319,8 @@ max_output_t s32_max_func(s32* a, s32* b) {
 			NAME##_swap(self, i, length-1-i);						\
 	}	\
 \
-	void __inter_##NAME##_merge_sort(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*)) {		\
+	void __inter_##NAME##_sort_merge																\
+	(NAME *self, size_t arr_start, size_t arr_length, max_output_t (*max_func)(TYPE*, TYPE*)) {		\
 		size_t i = 0, li = 0, ri = 0, mid_point = 0;	\
 		TYPE *left_temp, *right_temp; 					\
 		max_output_t rv; 								\
@@ -297,8 +328,8 @@ max_output_t s32_max_func(s32* a, s32* b) {
 		if (arr_start == arr_length-1) return;	 /* 1 eleman kalinca bitir */ 	\
 		mid_point = arr_start + (arr_length - arr_start) / 2; /* l+(r-l)/2 */ 	\
 		\
-		__inter_##NAME##_merge_sort(self, arr_start, mid_point , max_func);		\
-		__inter_##NAME##_merge_sort(self, mid_point, arr_length, max_func);		\
+		__inter_##NAME##_sort_merge(self, arr_start, mid_point , max_func);		\
+		__inter_##NAME##_sort_merge(self, mid_point, arr_length, max_func);		\
 		\
 		left_temp  = (TYPE *)malloc(sizeof(TYPE) * (mid_point - arr_start ));	\
 		right_temp = (TYPE *)malloc(sizeof(TYPE) * (arr_length - mid_point));	\
@@ -327,17 +358,67 @@ max_output_t s32_max_func(s32* a, s32* b) {
 		free(left_temp); free(right_temp); 																\
 	} 	\
 \
-	void NAME##_merge_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*)) {	\
-		__inter_##NAME##_merge_sort(self, 0, NAME##_length(self), max_func);		\
+	void NAME##_sort_merge(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*)) {	\
+		__inter_##NAME##_sort_merge(self, 0, NAME##_length(self), max_func);		\
 	}	\
 \
-	void NAME##_bubble_sort(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*)) {			\
+	void NAME##_sort_bubble(NAME *self, max_output_t (*max_func)(TYPE*, TYPE*)) {			\
 	size_t i, j, last_index = NAME##_length(self)-1;										\
 	for (i = 0; i < last_index; i++)														\
 		for (j = 0; j < last_index-i; j++)													\
            	if ( MO_FIRST_ARG == max_func(NAME##_get(self, j), NAME##_get(self, j+1)) )		\
               	NAME##_swap(self, j, j+1);													\
-}	\
+	}	\
+\
+	size_t NAME##_search_binary														\
+	(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*)) {				\
+		size_t array_start = 1, array_length = NAME##_length(self);					\
+		size_t mid_point; max_output_t rv;											\
+		while (array_start <= array_length) {										\
+			mid_point = (int)(array_start + (array_length - array_start - 2) / 2);	\
+			rv = max_func(NAME##_get(self, mid_point), &target);					\
+			if (rv == MO_ARGS_EQUAL)												\
+				return mid_point;													\
+			else if (rv == MO_FIRST_ARG)											\
+				array_length = mid_point;											\
+			else if (rv == MO_SECOND_ARG)											\
+				array_start = mid_point + 2;										\
+		} return -1;																\
+	}	\
+\
+	size_t NAME##_search_binary_p													\
+	(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*)) {			\
+		size_t array_start = 1, array_length = NAME##_length(self);					\
+		size_t mid_point; max_output_t rv;											\
+		while (array_start <= array_length) {										\
+			mid_point = (int)(array_start + (array_length - array_start - 2) / 2);	\
+			rv = max_func(NAME##_get(self, mid_point), target);						\
+			if (rv == MO_ARGS_EQUAL)												\
+				return mid_point;													\
+			else if (rv == MO_FIRST_ARG)											\
+				array_length = mid_point;											\
+			else if (rv == MO_SECOND_ARG)											\
+				array_start = mid_point + 2;										\
+		} return -1;																\
+	}	\
+\
+	size_t NAME##_search_linear												\
+	(NAME *self, TYPE target, max_output_t (*max_func)(TYPE*, TYPE*)) {		\
+		size_t array_start = 0, array_length = NAME##_length(self);			\
+		size_t i; for (i = array_start; i < array_length; i++)				\
+			if (MO_ARGS_EQUAL == max_func(NAME##_get(self, i), &target))	\
+				return i;							 						\
+		return -1;															\
+	}	\
+\
+	size_t NAME##_search_linear_p											\
+	(NAME *self, TYPE *target, max_output_t (*max_func)(TYPE*, TYPE*)) {	\
+		size_t array_start = 0, array_length = NAME##_length(self);			\
+		size_t i; for (i = array_start; i < array_length; i++)				\
+			if (MO_ARGS_EQUAL == max_func(NAME##_get(self, i), target))		\
+				return i;							 						\
+		return -1;															\
+	}	\
 \
 struct __internal_you_need_semicolon
 
