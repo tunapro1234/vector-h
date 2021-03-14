@@ -28,7 +28,7 @@ typedef struct base_vector_t {
 
 
 #define vector_init(type, capacity) \
-	(vector_t(type)) _vector_init(sizeof(type) * capacity)
+	(vector_t(type))_vector_init(sizeof(type) * capacity)
 
 base_vector_t _vector_init(const size_t size) {
     base_vector_t new_vector;
@@ -43,7 +43,7 @@ base_vector_t _vector_init(const size_t size) {
 
 
 #define vector_init_h(type, capacity) \
-	(vector_t(type) *) _vector_init_h(sizeof(type) * capacity)
+	(vector_t(type) *)_vector_init_h(sizeof(type) * capacity)
 
 base_vector_t* _vector_init_h(const size_t size) {
     base_vector_t *new_vector = (base_vector_t *)malloc(sizeof(base_vector_t));
@@ -58,7 +58,7 @@ base_vector_t* _vector_init_h(const size_t size) {
 
 
 #define vector_destroy(type, self) \
-	_vector_destroy((base_vector_t *) self)
+	_vector_destroy((base_vector_t *)self)
 
 void _vector_destroy(base_vector_t *self) {
 	free(self->_start);
@@ -94,7 +94,7 @@ size_t _vector_size(const base_vector_t *self)
 
 
 #define vector_move_h(type, self) \
-	(vector_t(type) *) _vector_move_h(sizeof(type), (base_vector_t *)self)
+	(vector_t(type) *)_vector_move_h(sizeof(type), (base_vector_t *)self)
 
 base_vector_t* _vector_move_h(const size_t type_size, base_vector_t *self) {
 	base_vector_t *new_vector = (base_vector_t *)malloc(sizeof(base_vector_t));
@@ -112,7 +112,7 @@ base_vector_t* _vector_move_h(const size_t type_size, base_vector_t *self) {
 
 
 #define vector_move(type, self) \
-	(vector_t(type) *) _vector_move((base_vector_t *)self)
+	(vector_t(type) *)_vector_move((base_vector_t *)self)
 
 base_vector_t _vector_move(base_vector_t *self) {
 	base_vector_t new_vector;
@@ -130,7 +130,7 @@ base_vector_t _vector_move(base_vector_t *self) {
 
 
 #define vector_copy_h(type, self) \
-	(vector_t(type) *) _vector_copy_h((const base_vector_t *)self)
+	(vector_t(type) *)_vector_copy_h((const base_vector_t *)self)
 
 base_vector_t* _vector_copy_h(const base_vector_t *self) {
 	size_t length = _vector_length(self);
@@ -143,7 +143,7 @@ base_vector_t* _vector_copy_h(const base_vector_t *self) {
 
 
 #define vector_copy(type, self) \
-	(vector_t(type) *) _vector_copy((const base_vector_t *)self)
+	(vector_t(type) *)_vector_copy((const base_vector_t *)self)
 
 base_vector_t _vector_copy(const base_vector_t *self) {
 	size_t length = ((char *)self->_end - self->_start);
@@ -155,6 +155,160 @@ base_vector_t _vector_copy(const base_vector_t *self) {
 
 
 
+#define vector_extend_capacity(type, self) \
+	_vector_extend_capacity((base_vector_t *)self)
+
+#define _vector_extend_capacity(self) \
+	_vector_resize(self, _vector_capacity(self) * 2)
+
+
+#define vector_resize(type, self, size) \
+	_vector_resize((base_vector_t *)self, size)
+
+bool _vector_resize(base_vector_t *self, const size_t size) {
+	size_t length 		= _vector_length(self);
+	size_t new_capacity = size;
+	
+	void *tmp = realloc(self->_start, new_capacity);
+	if (tmp == NULL) return False;
+
+	self->_start 	= tmp;
+	self->_capacity = (char *)self->_start + new_capacity;
+	self->_end 		= (char *)self->_start + length;
+	return True;
+}
+
+
+
+/* rvalue alabilmek için makro olmalı */
+#define vector_push_back(type, self, data) ({			\
+	if (self->_end == self->_capacity)									\
+		if (vector_extend_capacity(type, self) == False)				\
+			False;														\
+	\
+	*(type *)self->_end = data; 						\
+	self->_end = (char *)self->_end + sizeof(type);		\
+	True;												\
+})
+
+
+
+#define vector_push_back_p(type, self, data) \
+	_vector_push_back_p(sizeof(type), (base_vector_t *)self, (void *)data)
+
+bool _vector_push_back_p(size_t type_size, base_vector_t *self, void* data) {
+	if (self->_end == self->_capacity)
+		if (_vector_extend_capacity(self) == False)
+			return False;
+
+	memcpy(self->_end, data, type_size);
+	self->_end = (char *)self->_end + type_size;
+	return True;
+}
+
+
+
+#define vector_get(type, self, index) \
+	(type *)_vector_get(sizeof(type), (base_vector_t *)self, index)
+
+void* _vector_get(const size_t type_size, base_vector_t *self, const size_t index)
+	{ return (char *)self->_start + (index * type_size); }
+
+
+#define vector_read(type, self, index) \
+	*(type *)((char *)self->_start + (index * sizeof(type)))
+
+
+
+#define vector_swap(type, self, index1, index2) 	\
+	type tmp = *vector_get(type, self, index1);								\
+	*vector_get(type, self, index1) = *vector_get(type, self, index2);		\
+	*vector_get(type, self, index2) = tmp									\
+
+
+/* mantıklı bir hareket değil biliyorum, ama her swap kullandığım fonksiyonun makroya dönüştürmek istemiyorum */
+void _vector_swap
+(const size_t type_size, base_vector_t *self, const size_t index1, const size_t index2) {	
+	void* tmp = malloc(type_size);
+	memcpy(tmp, _vector_get(type_size, self, index1), type_size);
+	memcpy(_vector_get(type_size, self, index1), _vector_get(type_size, self, index2), type_size);
+	memcpy(_vector_get(type_size, self, index2), tmp, type_size);
+}
+
+
+
+bool vector_insert_p(const size_t type_size, base_vector_t *self, const size_t index, void *value) {	
+	size_t i, length;
+	if (self->_end == self->_capacity)
+		if (_vector_extend_capacity(self) == False)
+			return False;
+
+	length = _vector_length(self);
+	for (i = length; i > index; i--)
+		*((char *)self->_start + (i * type_size)) = *((char *)self->_start + ((i - 1) * type_size));
+	memcpy(_vector_get(type_size, self, index), value, type_size);
+	self->_end = (char *)self->_end + type_size;
+	return True;
+}
+
+
+
+/* rvalue alabilmek için makro olmalı */
+#define vector_insert(type, self, index, value)	({			\
+	size_t i, length;										\
+	if (self->_end == self->_capacity)						\
+		if (vector_extend_capacity(type, self) == False)	\
+			False;											\
+	\
+	length = vector_length(type, self);						\
+	for (i = length; i > index; i--)						\
+		*(self->_start + i) = *(self->_start + i - 1);		\
+	*vector_get(type, self, index) = value;					\
+	self->_end = (char *)self->_end + sizeof(type);			\
+	True;													\
+})
+
+
+
+/* bunun direkt makro versiyonu lazım */
+void vector_shift_r(const size_t type_size, base_vector_t *self) {
+	void *tmp = malloc(type_size);
+	size_t i, last_index = _vector_length(self)-1;
+	memcpy(tmp, _vector_get(type_size, self, last_index), type_size);
+	for (i = last_index; i > 0; i--)
+		memcpy(_vector_get(type_size, self, i), 
+			_vector_get(type_size, self, i-1), type_size);
+	memcpy(_vector_get(type_size, self, 0), tmp, type_size);
+}
+
+
+
+/* bunun da makrosu lazım */
+void vector_shift_l(const size_t type_size, base_vector_t *self) {
+	size_t i, length = _vector_length(self);
+	void *tmp = malloc(type_size);
+	
+	memcpy(tmp, _vector_get(type_size, self, 0), type_size);
+	for (i = 1; i < length; i++)
+		memcpy(_vector_get(type_size, self, i-1), 
+			_vector_get(type_size, self, i), type_size);
+	memcpy(_vector_get(type_size, self, length-1), tmp, type_size);
+}
+
+
+
+/* makrolar daha hızlı */
+#define vector_reverse(type, self)		\
+	size_t i, length = vector_length(type, self);	\
+	for (i = 0; i < length / 2; i++)				\
+		vector_swap(self, i, length-1-i);			\
+
+/* yavaş ama bulunsun, malloc yüzünden */
+void _vector_reverse(const size_t type_size, base_vector_t *self) {
+	size_t i, length = _vector_length(self) / type_size;
+	for (i = 0; i < length/2; i++)
+		_vector_swap(type_size, self, i, length-1-i);
+}
 
 
 
