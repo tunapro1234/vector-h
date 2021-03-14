@@ -1,9 +1,9 @@
-#include "../../main.h"
+#include "../main.h"
 
 /*
- * Yeni fonksiyonları ReadMeye yükle
- * malloc için exception handling
- * debug ve release olarak ikiye ayır
+ * max_output_type_t sil
+ * malloc için exception handling (whgbkvugkz)
+ * debug ve release olarak ikiye ayır (augbvnukb)
  * 
  */
 
