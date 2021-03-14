@@ -28,13 +28,13 @@ typedef struct base_vector_t {
 
 
 #define vector_init(type, capacity) \
-	(vector_t(type)) _vector_init(sizeof(type), capacity)
+	(vector_t(type)) _vector_init(sizeof(type) * capacity)
 
-base_vector_t _vector_init(const size_t type_size, size_t capacity) {
+base_vector_t _vector_init(const size_t size) {
     base_vector_t new_vector;
 	
-	new_vector._start 		= malloc(type_size * capacity);
-	new_vector._capacity 	= (char *)new_vector._start + (type_size * capacity);
+	new_vector._start 		= malloc(size);
+	new_vector._capacity 	= (char *)new_vector._start + (size);
 	new_vector._end 		= new_vector._start;
 
 	return new_vector;
@@ -43,13 +43,13 @@ base_vector_t _vector_init(const size_t type_size, size_t capacity) {
 
 
 #define vector_init_h(type, capacity) \
-	(vector_t(type) *) _vector_init_h(sizeof(type), capacity)
+	(vector_t(type) *) _vector_init_h(sizeof(type) * capacity)
 
-base_vector_t* _vector_init_h(const size_t type_size, size_t capacity) {
+base_vector_t* _vector_init_h(const size_t size) {
     base_vector_t *new_vector = (base_vector_t *)malloc(sizeof(base_vector_t));
 	
-	new_vector->_start 		= malloc(type_size * capacity);
-	new_vector->_capacity 	= (char *)new_vector->_start + (type_size * capacity);
+	new_vector->_start 		= malloc(size);
+	new_vector->_capacity 	= (char *)new_vector->_start + size;
 	new_vector->_end 		= new_vector->_start;
 
 	return new_vector;
@@ -70,26 +70,26 @@ void _vector_destroy(base_vector_t *self) {
 
 
 #define vector_capacity(type, self)	\
-	_vector_capacity(sizeof(type), (const base_vector_t *)self)
+	_vector_capacity((const base_vector_t *)self) / sizeof(type)
 
-size_t _vector_capacity(const size_t type_size, const base_vector_t *self)
-	{ return ((char*)self->_capacity - self->_start) / type_size; }
+size_t _vector_capacity(const base_vector_t *self)
+	{ return ((char*)self->_capacity - self->_start); }
 
 
 
 #define vector_length(type, self) \
-	_vector_length(sizeof(type), (const base_vector_t *)self)
+	_vector_length((const base_vector_t *)self) / sizeof(type)
 
-size_t _vector_length(const size_t type_size, const base_vector_t *self)
-	{ return ((char*)self->_end - self->_start) / type_size; }
+size_t _vector_length(const base_vector_t *self)
+	{ return ((char*)self->_end - self->_start); }
 
 
 
 #define vector_size(type, self)	\
-	vector_size(sizeof(type), (const base_vector_t *)self)
+	vector_size((const base_vector_t *)self) / sizeof(type)
 
-size_t _vector_size(const size_t type_size, const base_vector_t *self)
-	{ return ((char*)self->_end - self->_start) / type_size; }
+size_t _vector_size(const base_vector_t *self)
+	{ return ((char*)self->_end - self->_start); }
 
 
 
@@ -130,13 +130,12 @@ base_vector_t _vector_move(base_vector_t *self) {
 
 
 #define vector_copy_h(type, self) \
-	(vector_t(type) *) _vector_copy_h(sizeof(type), (const base_vector_t *)self)
+	(vector_t(type) *) _vector_copy_h((const base_vector_t *)self)
 
-base_vector_t* _vector_copy_h(const size_t type_size, const base_vector_t *self) {
-	size_t length = ((char *)self->_end - self->_start);
-	/* kesinlikle aşağıdaki satırı düzenlemeliyim, ama çok üşeniyorum */
-	base_vector_t *new_vector = _vector_init_h(type_size, _vector_capacity(type_size, self));
-	memcpy(new_vector->_start, self->_start, ((char*)self->_capacity - self->_start));
+base_vector_t* _vector_copy_h(const base_vector_t *self) {
+	size_t length = _vector_length(self);
+	base_vector_t *new_vector = _vector_init_h(_vector_capacity(self));
+	memcpy(new_vector->_start, self->_start, _vector_capacity(self));
 	new_vector->_end = (char *)new_vector->_start + length;
 	return new_vector;
 }
@@ -144,13 +143,12 @@ base_vector_t* _vector_copy_h(const size_t type_size, const base_vector_t *self)
 
 
 #define vector_copy(type, self) \
-	(vector_t(type) *) _vector_copy(sizeof(type), (const base_vector_t *)self)
+	(vector_t(type) *) _vector_copy((const base_vector_t *)self)
 
-base_vector_t _vector_copy(const size_t type_size, const base_vector_t *self) {
+base_vector_t _vector_copy(const base_vector_t *self) {
 	size_t length = ((char *)self->_end - self->_start);
-	/* kesinlikle aşağıdaki satırı düzenlemeliyim, ama çok üşeniyorum 2 */
-	base_vector_t new_vector = _vector_init(type_size, _vector_capacity(type_size, self));
-	memcpy(new_vector._start, self->_start, ((char*)self->_capacity - self->_start));
+	base_vector_t new_vector = _vector_init(_vector_capacity(self));
+	memcpy(new_vector._start, self->_start, _vector_capacity(self));
 	new_vector._end = (char *)new_vector._start + length;
 	return new_vector;
 }
