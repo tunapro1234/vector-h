@@ -490,7 +490,11 @@ size_t __vector_search_linear_p
 			i;							 													\
 	-1;																						\
 })
-
-
-
+/*	
+ * TUNAPRO1234
+ * 15/03/21
+ * 00.22 
+ * 500 satır
+ * ba dum tıss
+ */
 #endif
