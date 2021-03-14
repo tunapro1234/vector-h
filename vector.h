@@ -95,9 +95,9 @@
 
 
 typedef enum max_output_t {
-	MO_FIRST_ARG,
-	MO_ARGS_EQUAL,
-	MO_SECOND_ARG,
+	MO_FIRST_ARG  =  1,
+	MO_ARGS_EQUAL =  0,
+	MO_SECOND_ARG = -1,
 	MO_COUNT
 } max_output_t;
 
