@@ -176,13 +176,16 @@ max_output_t s32_max_func(s32* a, s32* b) {
 		NAME new_vector; 														\
 		\
 		new_vector._start 		= (TYPE *)malloc(sizeof(TYPE) * capacity); 		\
-		new_vector._capacity		= new_vector._start + capacity; 			\
+		new_vector._capacity	= new_vector._start + capacity; 				\
 		new_vector._end			= new_vector._start; 							\
 		return new_vector; 														\
 	} 	\
 \
 	void NAME##_destroy(NAME *self) { 			\
 		free(self->_start); 					\
+		self->_capacity = NULL;					\
+		self->_start 	= NULL;					\
+		self->_end 		= NULL;					\
 	} 	\
 \
 	size_t NAME##_capacity(const NAME *self) { return self->_capacity - self->_start; }	\
@@ -235,7 +238,7 @@ max_output_t s32_max_func(s32* a, s32* b) {
 		if (tmp == NULL) return False; 									\
 		\
 		self->_start 	= (TYPE *)tmp; 									\
-		self->_capacity 	= self->_start + new_capacity; 				\
+		self->_capacity = self->_start + new_capacity; 				\
 		self->_end 		= self->_start + length; 						\
 		return True; 													\
 	} 	\
