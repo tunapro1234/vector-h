@@ -5,6 +5,16 @@
  * malloc için exception handling (whgbkvugkz)
  * debug ve release olarak ikiye ayır (augbvnukb)
  * 
+ * 	debug ve release e ayırmanın zorluklarını keşfettim #ifdef tarzında 
+ * direktifleri makrolar içinde kullanamadığım için kodun belirli parçalarını 
+ * açıp kapatamıyorum.
+ * Bunun için yapılabilecek şeylerden bir tanesi her fonksiyonu ayrı makrolara 
+ * bölüp ek olarak debug parametresi alabilirim
+ * Tabii bu gereksiz uğraştırıcı
+ * 
+ * onun yerine farklı bir yol izlemeye kara verdim. fonksiyonlar void* ve 
+ * base_vector (vector_void_t) alacak. Ayrıca size da lazım olacak. 
+ * Neyse detayları kesinleştiririm. Sonraki versiyonda düzeltmiş olurum
  */
 
 typedef enum max_output_t {
