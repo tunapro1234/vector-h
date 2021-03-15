@@ -194,9 +194,9 @@ bool _vector_resize(base_vector_t *self, size_t size) {
 
 
 #define vector_push_back_p(type, self, data) \
-	_vector_push_back_p(sizeof(type), (base_vector_t *)self, (void *)data)
+	_vector_push_back_p(sizeof(type), (base_vector_t *)self, (const void *)data)
 
-bool _vector_push_back_p(size_t type_size, base_vector_t *self, void* data) {
+bool _vector_push_back_p(size_t type_size, base_vector_t *self, const void* data) {
 	if (self->_end == self->_capacity)
 		if (_vector_extend_capacity(self) == False)
 			return False;
@@ -237,8 +237,11 @@ void _vector_swap
 
 
 
-bool vector_insert_p
-(size_t type_size, base_vector_t *self, size_t index, void *value) {	
+#define vector_insert_p(type, self, index, value) \
+	_vector_insert_p(sizeof(type), (base_vector_t *)self, index, (const void *)value)
+
+bool _vector_insert_p
+(size_t type_size, base_vector_t *self, size_t index, const void *value) {	
 	size_t i, length;
 	if (self->_end == self->_capacity)
 		if (_vector_extend_capacity(self) == False)
