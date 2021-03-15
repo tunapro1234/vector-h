@@ -3,6 +3,10 @@
 
 #include "main.h"
 
+/* 
+ * #define NVECTOR_IMPL 
+ * 
+ */
 
 typedef enum max_output_t {
 	MO_FIRST_ARG  =  1,
@@ -27,17 +31,23 @@ typedef struct base_vector_t {
 
 
 
+/*========================*/
+base_vector_t __new_vector;
+/*========================*/
+
+#define vector_init_s(type, capacity) ({				\
+	__new_vector = _vector_init_s(sizeof(int) * 10);	\
+	(vector_t(type) *)&__new_vector; 					\
+})
+
+base_vector_t _vector_init_s(size_t size);
+
+
+
 #define vector_init(type, capacity) \
-	(vector_t(type))_vector_init(sizeof(type) * capacity)
+	(vector_t(type) *)_vector_init(sizeof(type) * capacity)
 
-base_vector_t _vector_init(size_t size);
-
-
-
-#define vector_init_h(type, capacity) \
-	(vector_t(type) *)_vector_init_h(sizeof(type) * capacity)
-
-base_vector_t* _vector_init_h(size_t size);
+base_vector_t* _vector_init(size_t size);
 
 
 
@@ -69,31 +79,31 @@ size_t _vector_size(const base_vector_t *self);
 
 
 
-#define vector_move_h(type, self) \
-	(vector_t(type) *)_vector_move_h(sizeof(type), (base_vector_t *)self)
-
-base_vector_t* _vector_move_h(size_t type_size, base_vector_t *self);
-
-
-
 #define vector_move(type, self) \
-	(vector_t(type) *)_vector_move((base_vector_t *)self)
+	(vector_t(type) *)_vector_move(sizeof(type), (base_vector_t *)self)
 
-base_vector_t _vector_move(base_vector_t *self);
+base_vector_t* _vector_move(size_t type_size, base_vector_t *self);
 
 
 
-#define vector_copy_h(type, self) \
-	(vector_t(type) *)_vector_copy_h((const base_vector_t *)self)
+#define vector_move_s(type, self) \
+	(vector_t(type) *)_vector_move_s((base_vector_t *)self)
 
-base_vector_t* _vector_copy_h(const base_vector_t *self);
+base_vector_t _vector_move_s(base_vector_t *self);
 
 
 
 #define vector_copy(type, self) \
 	(vector_t(type) *)_vector_copy((const base_vector_t *)self)
 
-base_vector_t _vector_copy(const base_vector_t *self);
+base_vector_t* _vector_copy(const base_vector_t *self);
+
+
+
+#define vector_copy_s(type, self) \
+	(vector_t(type) *)_vector_copy_s((const base_vector_t *)self)
+
+base_vector_t _vector_copy_s(const base_vector_t *self);
 
 
 
@@ -117,9 +127,9 @@ bool _vector_resize(base_vector_t *self, size_t size);
 		if (vector_extend_capacity(type, self) == False)	\
 			False;											\
 	\
-	*(type *)self->_end = data; 							\
-	self->_end = (char *)self->_end + sizeof(type);			\
-	True;													\
+	*self->_end = data; 	\
+	self->_end++;			\
+	True;					\
 })
 
 
@@ -127,25 +137,25 @@ bool _vector_resize(base_vector_t *self, size_t size);
 #define vector_push_back_p(type, self, data) \
 	_vector_push_back_p(sizeof(type), (base_vector_t *)self, (const void *)data)
 
-bool _vector_push_back_p(size_t type_size, base_vector_t *self, const void* data);
-
+bool _vector_push_back_p(size_t type_size, base_vector_t *self, void* data);
 
 
 #define vector_get(type, self, index) \
-	(type *)_vector_get(sizeof(type), (base_vector_t *)self, index)
+	((type *)_vector_get(sizeof(type), (base_vector_t *)self, index))
 
 void* _vector_get(size_t type_size, base_vector_t *self, size_t index);
 
 
 #define vector_read(type, self, index) \
-	*(type *)((char *)self->_start + (index * sizeof(type)))
+	(*(type *)((char *)self->_start + (index * sizeof(type))))
 
 
 
-#define vector_swap(type, self, index1, index2) 						\
-	type tmp = *vector_get(type, self, index1);							\
+#define vector_swap(type, self, index1, index2) ({ 						\
+	type __tmp = *vector_get(type, self, index1);						\
 	*vector_get(type, self, index1) = *vector_get(type, self, index2);	\
-	*vector_get(type, self, index2) = tmp
+	*vector_get(type, self, index2) = __tmp;							\
+})
 
 
 /* mantıklı bir hareket değil biliyorum, ama her swap kullandığım fonksiyonun makroya dönüştürmek istemiyorum */
@@ -164,28 +174,29 @@ bool _vector_insert_p
 
 /* rvalue alabilmek için makro olmalı */
 #define vector_insert(type, self, index, value)	({			\
-	size_t i, length;										\
+	size_t _i, __length;									\
 	if (self->_end == self->_capacity)						\
 		if (vector_extend_capacity(type, self) == False)	\
 			False;											\
 	\
-	length = vector_length(type, self);						\
-	for (i = length; i > index; i--)						\
-		*(self->_start + i) = *(self->_start + i - 1);		\
+	__length = vector_length(type, self);					\
+	for (_i = __length; _i > index; _i--)					\
+		*(self->_start + _i) = *(self->_start + _i - 1);	\
 	*vector_get(type, self, index) = value;					\
-	self->_end = (char *)self->_end + sizeof(type);			\
+	self->_end++;											\
 	True;													\
 })
 
 
 
 /* faster */
-#define vector_shift_r(type, self)									\
-	size_t i, last_index = vector_length(type, self) - 1;			\
-	type tmp = *vector_get(type, self, last_index);					\
-	for (i = last_index; i > 0; i--)								\
-		*vector_get(type, self, i) = *vector_get(type, self, i-1);	\
-	*vector_get(type, self, 0) = tmp
+#define vector_shift_r(type, self) ({								\
+	size_t _i, last_index = vector_length(type, self) - 1;			\
+	type __tmp = *vector_get(type, self, last_index);					\
+	for (_i = last_index; _i > 0; _i--)								\
+		*vector_get(type, self, _i) = *vector_get(type, self, _i-1);	\
+	*vector_get(type, self, 0) = __tmp;								\
+})
 
 /* slower */
 #define vector_shift_r_(type, self)	\
@@ -196,12 +207,13 @@ void _vector_shift_r(size_t type_size, base_vector_t *self);
 
 
 /* faster */
-#define vector_shift_l(type, self)										\
-	size_t i, length = vector_length(type, self);						\
-	type tmp = *vector_get(type, self, 0);								\
-	for (i = 1; i < length; i++)										\
-		*vector_get(type, self, i - 1) = *vector_get(type, self, i);	\
-	*vector_get(type, self, length - 1) = tmp
+#define vector_shift_l(type, self) ({										\
+	size_t _i, __length = vector_length(type, self);						\
+	type __tmp = *vector_get(type, self, 0);								\
+	for (_i = 1; _i < __length; _i++)									\
+		*vector_get(type, self, _i - 1) = *vector_get(type, self, _i);	\
+	*vector_get(type, self, __length - 1) = __tmp;							\
+})
 
 
 /* slower */
@@ -213,10 +225,11 @@ void _vector_shift_l(size_t type_size, base_vector_t *self);
 
 
 /* makrolar daha hızlı */
-#define vector_reverse(type, self)					\
-	size_t i, length = vector_length(type, self);	\
-	for (i = 0; i < length / 2; i++)				\
-		vector_swap(self, i, length - 1 - i)
+#define vector_reverse(type, self) ({						\
+	size_t _i, __length = vector_length(type, self);		\
+	for (_i = 0; _i < __length / 2; _i++)				\
+		vector_swap(type, self, _i, __length - 1 - _i);	\
+})
 
 
 #define vector_reverse_(type, self) \
@@ -240,12 +253,13 @@ void __vector_sort_merge
 
 
 /* faster */
-#define vector_sort_bubble(type, self, max_func) 														\
-	size_t i, j, last_index = vector_length(type, self) - 1;											\
-	for (i = 0; i < last_index; i++)																	\
-		for (j = 0; j < last_index-i; j++)																\
+#define vector_sort_bubble(type, self, max_func) ({														\
+	size_t _i, j, last_index = vector_length(type, self) - 1;											\
+	for (_i = 0; _i < last_index; _i++)																\
+		for (j = 0; j < last_index-_i; j++)															\
            	if ( MO_FIRST_ARG == max_func(vector_get(type, self, j), vector_get(type, self, j+1)) )		\
               	vector_swap(type, self, j, j+1);														\
+})
 
 
 /* slower */
@@ -269,22 +283,23 @@ size_t __vector_search_binary_p
 
 
 /* size_t array_start = 1, array_length = vector_length(type, self); */
-#define _vector_search_binary(type, self, target, max_func) \
+#define vector_search_binary(type, self, target, max_func) \
 	_vector_search_binary(type, self, target, 0, vector_length(type, self), max_func)
 
 #define _vector_search_binary(type, self, target, array_start, array_length, max_func) ({	\
-	size_t _array_start = (array_size) + 1, _array_length = (array_length) + 1;		\
-	size_t mid_point; max_output_t rv;												\
+	type _target = (target);														\
+	size_t _array_start = (array_start) + 1, _array_length = (array_length) + 1;	\
+	size_t mid_point, found = -1; max_output_t rv;									\
 	while (_array_start <= _array_length) {											\
 		mid_point = (int)(_array_start + (_array_length - _array_start - 2) / 2);	\
-		rv = max_func(vector_get(type, self, mid_point), &target);					\
-		if (rv == MO_ARGS_EQUAL)													\
-			mid_point;																\
-		else if (rv == MO_FIRST_ARG)												\
+		rv = max_func(vector_get(type, self, mid_point), &_target);					\
+		if (rv == MO_ARGS_EQUAL) {													\
+			found = mid_point; break;												\
+		} else if (rv == MO_FIRST_ARG)												\
 			_array_length = mid_point;												\
 		else if (rv == MO_SECOND_ARG)												\
 			_array_start = mid_point + 2;											\
-	} -1;																			\
+	} found;																		\
 })
 
 
@@ -302,12 +317,14 @@ size_t __vector_search_linear_p
 #define vector_search_linear(type, self, target, max_func) \
 	_vector_search_linear(type, self, target, 0, vector_length(type, self), max_func)
 
-#define _vector_search_linear(type, self, target, array_start, array_length, max_funx) ({	\
-	size_t _array_start = (array_start), _array_length = (array_length);					\
-	size_t i; for (i = _array_start; i < _array_length; i++)								\
-		if (MO_ARGS_EQUAL == max_func(vector_get(type, self, i), &target))					\
-			i;							 													\
-	-1;																						\
+#define _vector_search_linear(type, self, target, array_start, array_length, max_func) ({	\
+	type _target = (target);																\
+	size_t _array_start = (array_start), _array_length = (array_length), found = -1;		\
+	size_t _i; for (_i = _array_start; _i < _array_length; _i++)							\
+		if (MO_ARGS_EQUAL == max_func(vector_get(type, self, _i), &_target)) {				\
+			found = _i; break;					 											\
+		}																					\
+	found;																					\
 })
 
 #ifdef NVECTOR_IMPL

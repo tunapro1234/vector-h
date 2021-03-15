@@ -4,7 +4,7 @@
 /* hata var diye çok ağlıyor */
 #ifdef NVECTOR_IMPL
 
-base_vector_t _vector_init(size_t size) {
+base_vector_t _vector_init_s(size_t size) {
     base_vector_t new_vector;
 	
 	new_vector._start 		= malloc(size);
@@ -15,7 +15,7 @@ base_vector_t _vector_init(size_t size) {
 }
 
 
-base_vector_t* _vector_init_h(size_t size) {
+base_vector_t* _vector_init(size_t size) {
     base_vector_t *new_vector = (base_vector_t *)malloc(sizeof(base_vector_t));
 	
 	new_vector->_start 		= malloc(size);
@@ -35,18 +35,18 @@ void _vector_destroy(base_vector_t *self) {
 
 
 size_t _vector_capacity(const base_vector_t *self)
-	{ return ((char*)self->_capacity - self->_start); }
+	{ return ((char *)self->_capacity - (char *)self->_start); }
 
 
 size_t _vector_length(const base_vector_t *self)
-	{ return ((char*)self->_end - self->_start); }
+	{ return ((char *)self->_end - (char *)self->_start); }
 
 
 size_t _vector_size(const base_vector_t *self)
-	{ return ((char*)self->_end - self->_start); }
+	{ return ((char *)self->_end - (char *)self->_start); }
 
 
-base_vector_t* _vector_move_h(size_t type_size, base_vector_t *self) {
+base_vector_t* _vector_move(size_t type_size, base_vector_t *self) {
 	base_vector_t *new_vector = (base_vector_t *)malloc(sizeof(base_vector_t));
 	
 	new_vector->_capacity 	= self->_capacity;
@@ -60,7 +60,7 @@ base_vector_t* _vector_move_h(size_t type_size, base_vector_t *self) {
 }
 
 
-base_vector_t _vector_move(base_vector_t *self) {
+base_vector_t _vector_move_s(base_vector_t *self) {
 	base_vector_t new_vector;
 	
 	new_vector._capacity 	= self->_capacity;
@@ -74,18 +74,18 @@ base_vector_t _vector_move(base_vector_t *self) {
 }
 
 
-base_vector_t* _vector_copy_h(const base_vector_t *self) {
+base_vector_t* _vector_copy(const base_vector_t *self) {
 	size_t length = _vector_length(self);
-	base_vector_t *new_vector = _vector_init_h(_vector_capacity(self));
+	base_vector_t *new_vector = _vector_init(_vector_capacity(self));
 	memcpy(new_vector->_start, self->_start, _vector_capacity(self));
 	new_vector->_end = (char *)new_vector->_start + length;
 	return new_vector;
 }
 
 
-base_vector_t _vector_copy(const base_vector_t *self) {
-	size_t length = ((char *)self->_end - self->_start);
-	base_vector_t new_vector = _vector_init(_vector_capacity(self));
+base_vector_t _vector_copy_s(const base_vector_t *self) {
+	size_t length = ((char *)self->_end - (char *)self->_start);
+	base_vector_t new_vector = _vector_init_s(_vector_capacity(self));
 	memcpy(new_vector._start, self->_start, _vector_capacity(self));
 	new_vector._end = (char *)new_vector._start + length;
 	return new_vector;
@@ -138,9 +138,11 @@ bool _vector_insert_p
 		if (_vector_extend_capacity(self) == False)
 			return False;
 
-	length = _vector_length(self);
+	length = _vector_length(self) / type_size;
 	for (i = length; i > index; i--)
-		*((char *)self->_start + (i * type_size)) = *((char *)self->_start + ((i - 1) * type_size));
+		memcpy(_vector_get(type_size, self, i), _vector_get(type_size, self, (i - 1)), type_size);
+		/* *_vector_get(type_size, self, i) = *_vector_get(type_size, self, (i - 1)); */
+		/* *((char *)self->_start + (i * type_size)) = *((char *)self->_start + ((i - 1) * type_size)); */
 	memcpy(_vector_get(type_size, self, index), value, type_size);
 	self->_end = (char *)self->_end + type_size;
 	return True;
@@ -235,7 +237,7 @@ void __vector_sort_bubble(size_t type_size, base_vector_t *self, max_output_t (*
 size_t _vector_search_binary_p
 (size_t type_size, base_vector_t *self, void *target, max_output_t (*max_func)(void*, void*)) {
 	/* array_start = 1, array_length = (_vector_length(self) / type_size); */
-	__vector_search_binary_p(type_size, self, target, 0, (_vector_length(self) / type_size) - 1, max_func);
+	return __vector_search_binary_p(type_size, self, target, 0, (_vector_length(self) / type_size) - 1, max_func);
 }
 
 size_t __vector_search_binary_p
