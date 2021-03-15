@@ -106,7 +106,7 @@ bool _vector_resize(base_vector_t *self, size_t size) {
 }
 
 
-bool _vector_push_back_p(size_t type_size, base_vector_t *self, void* data) {
+bool _vector_push_back_p(size_t type_size, base_vector_t *self, const void* data) {
 	if (self->_end == self->_capacity)
 		if (_vector_extend_capacity(self) == False)
 			return False;

@@ -64,7 +64,7 @@ void test_vector_sort_bubble(cu_test_t *tc);
 void test_vector_sort_merge(cu_test_t *tc);
 void test_vector_search_linear(cu_test_t *tc);
 void test_vector_search_binary(cu_test_t *tc);
-
+void test_base_vector_typed_funcs(cu_test_t *tc);
 
 cu_suite_t* test_vector_get_suite() {
 	cu_suite_t* suite = cu_suite_new();
@@ -84,6 +84,7 @@ cu_suite_t* test_vector_get_suite() {
 	SUITE_ADD_TEST(suite, test_vector_sort_merge		);
 	SUITE_ADD_TEST(suite, test_vector_search_linear		);
 	SUITE_ADD_TEST(suite, test_vector_search_binary		);
+	SUITE_ADD_TEST(suite, test_base_vector_typed_funcs	);
 	
 	return suite;
 }
@@ -294,5 +295,13 @@ void test_vector_search_binary(cu_test_t *tc) {
 		cu_assert_int_equals(tc, i, 
 			vector_search_binary(int, v1, i, s32_max_func));
 #undef LEN
+}
+
+
+void test_base_vector_typed_funcs(cu_test_t *tc) {
+	base_vector_t v1 = _vector_init_s(sizeof(int) * 10);
+
+	vector_push_back(int, &v1, 10);
+	cu_assert_int_equals(tc, 10, vector_read(int, &v1, 0));
 }
 
