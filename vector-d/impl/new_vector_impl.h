@@ -75,10 +75,9 @@ base_vector_t _vector_move_s(base_vector_t *self) {
 
 
 base_vector_t* _vector_copy(const base_vector_t *self) {
-	size_t length = _vector_length(self);
 	base_vector_t *new_vector = _vector_init(_vector_capacity(self));
 	memcpy(new_vector->_start, self->_start, _vector_capacity(self));
-	new_vector->_end = (char *)new_vector->_start + length;
+	new_vector->_end = (char *)new_vector->_start + _vector_length(self);
 	return new_vector;
 }
 

@@ -93,7 +93,7 @@ cu_suite_t* test_vector_get_suite() {
 void test_vector_get_read(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN; i++) {
 		vector_push_back(int, v1, i);
 		cu_assert_int_equals(tc, i, vector_read(int, v1, i));
@@ -103,12 +103,12 @@ void test_vector_get_read(cu_test_t *tc) {
 
 
 void test_vector_move(cu_test_t *tc) {
-	vector_t(person_t) *v1 = vector_init(person_t, 2), *v2;
+	base_vector_t *v1 = _vector_init(sizeof(person_t) * 2), *v2;
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
 	vector_push_back_p(person_t, v1, p1);
 	vector_push_back_p(person_t, v1, p2);
 	
-	v2 = vector_move(person_t, v1);
+	v2 = _vector_move(sizeof(person_t), v1);
 	
 	cu_assert_ptr_not_null(tc, v2->_capacity);
 	cu_assert_ptr_not_null(tc, v2->_start);
@@ -121,12 +121,12 @@ void test_vector_move(cu_test_t *tc) {
 
 
 void test_vector_copy(cu_test_t *tc) {
-	vector_t(person_t) *v1 = vector_init(person_t, 2), *v2;
+	base_vector_t *v1 = _vector_init(sizeof(person_t) * 2), *v2;
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
 	vector_push_back_p(person_t, v1, p1);
 	vector_push_back_p(person_t, v1, p2);
 	
-	v2 = vector_copy(person_t, v1);
+	v2 = _vector_copy(v1);
 	
 	cu_assert_true(tc, v1->_capacity != v2->_capacity);
 	cu_assert_true(tc, v1->_start 	 != v2->_start	 );
@@ -137,7 +137,7 @@ void test_vector_copy(cu_test_t *tc) {
 void test_vector_expand(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN * 2; i++) vector_push_back(int, v1, i);
 	for (i = 0; i < LEN * 2; i++) cu_assert_int_equals(tc, i, vector_read(int, v1, i));
 #undef LEN
@@ -145,7 +145,7 @@ void test_vector_expand(cu_test_t *tc) {
 
 
 void test_vector_push_back_ptr(cu_test_t *tc) {
-	vector_t(person_t) *v1 = vector_init(person_t, 2);
+	base_vector_t *v1 = _vector_init(sizeof(person_t) * 2);
 	person_t *p1 = person_init("p1", 1), *p2 = person_init("p2", 2);
 	vector_push_back_p(person_t, v1, p1);
 	vector_push_back_p(person_t, v1, p2);
@@ -154,7 +154,7 @@ void test_vector_push_back_ptr(cu_test_t *tc) {
 
 void test_vector_swap(cu_test_t *tc) {
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, 3);
+	base_vector_t *v1 = _vector_init(sizeof(int) * 3);
 	for (i = 0; i < 3; i++) vector_push_back(int, v1, i);
 	vector_swap(int, v1, 0, 2);
 	
@@ -167,7 +167,7 @@ void test_vector_swap(cu_test_t *tc) {
 void test_vector_insert(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 	vector_insert(int, v1, 0, 0);
 
@@ -180,7 +180,7 @@ void test_vector_insert(cu_test_t *tc) {
 void test_vector_insert_ptr(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(person_t) *v1 = vector_init(person_t, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(person_t) * LEN);
 	for (i = 0; i < LEN; i++) vector_push_back_p(person_t, v1, person_init("a", i));
 	vector_insert_p(person_t, v1, 0, person_init("a", 0));
 
@@ -193,7 +193,7 @@ void test_vector_insert_ptr(cu_test_t *tc) {
 void test_vector_shift_r(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 	vector_shift_r(int, v1);
 	
@@ -206,7 +206,7 @@ void test_vector_shift_r(cu_test_t *tc) {
 void test_vector_shift_l(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 	vector_shift_l(int, v1);
 
@@ -219,7 +219,7 @@ void test_vector_shift_l(cu_test_t *tc) {
 void test_vector_reverse(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v1 = vector_init(int, LEN);
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN);
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 	vector_reverse(int, v1);
 	
@@ -232,8 +232,8 @@ void test_vector_reverse(cu_test_t *tc) {
 void test_vector_sort_bubble(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v_ex = vector_init(int, LEN);
-	vector_t(int) *v_ac = vector_init(int, LEN);
+	base_vector_t *v_ex = _vector_init(sizeof(int) * LEN);
+	base_vector_t *v_ac = _vector_init(sizeof(int) * LEN);
 	
 	for (i = 0; i < LEN; i++) vector_push_back(int, v_ex, i);
 	for (i = LEN; i > 0; i--) vector_push_back(int, v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
@@ -248,8 +248,8 @@ void test_vector_sort_bubble(cu_test_t *tc) {
 void test_vector_sort_merge(cu_test_t *tc) {
 #define LEN default_test_len
 	size_t i;
-	vector_t(int) *v_ex = vector_init(int, LEN);
-	vector_t(int) *v_ac = vector_init(int, LEN);
+	base_vector_t *v_ex = _vector_init(sizeof(int) * LEN);
+	base_vector_t *v_ac = _vector_init(sizeof(int) * LEN);
 	
 	for (i = 0; i < LEN; i++) vector_push_back(int, v_ex, i);
 	for (i = LEN; i > 0; i--) vector_push_back(int, v_ac, i - 1); 	/* (i = 6; i-- > 0; ) */
@@ -263,7 +263,7 @@ void test_vector_sort_merge(cu_test_t *tc) {
 
 void test_vector_search_linear(cu_test_t *tc) {
 #define LEN default_test_len
-	vector_t(int) *v1 = vector_init(int, LEN); size_t i;
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN); size_t i;
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 
 	for (i = 0; i < LEN; i++) {
@@ -271,24 +271,11 @@ void test_vector_search_linear(cu_test_t *tc) {
 	}
 #undef LEN
 }
-/*
-#define vector_search_linear(type, self, target, max_func) \
-	_vector_search_linear(type, self, target, 0, vector_length(type, self), max_func)
-
-#define _vector_search_linear(type, self, target, array_start, array_length, max_func) ({	\
-	size_t _array_start = (array_start), _array_length = (array_length);					\
-	size_t _i; for (_i = _array_start; _i < _array_length; _i++)							\
-		if (MO_ARGS_EQUAL == max_func(vector_get(type, self, _i), &target))					\
-			_i;							 													\
-	-1;																						\
-})
-*/
-
 
 
 void test_vector_search_binary(cu_test_t *tc) {
 #define LEN default_test_len
-	vector_t(int) *v1 = vector_init(int, LEN); size_t i;
+	base_vector_t *v1 = _vector_init(sizeof(int) * LEN); size_t i;
 	for (i = 0; i < LEN; i++) vector_push_back(int, v1, i);
 
 	for (i = 0; i < LEN; i++)
