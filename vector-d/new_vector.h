@@ -8,6 +8,7 @@
  * 
  */
 
+
 typedef enum max_output_t {
 	MO_FIRST_ARG  =  1,
 	MO_ARGS_EQUAL =  0,
@@ -20,6 +21,11 @@ max_output_t s32_max_func(s32* a, s32* b) {
 	else if (*a == *b) 	return MO_ARGS_EQUAL;
 	else 				return MO_SECOND_ARG;
 }
+
+#define CAT(a, ...) PRIMITIVE_CAT(a, __VA_ARGS__)
+#define PRIMITIVE_CAT(a, ...) a ## __VA_ARGS__
+
+#define ANON(name) CAT(name##_, __LINE__)
 
 
 #define vector_t(type) \
@@ -141,15 +147,15 @@ bool _vector_resize(base_vector_t *self, size_t size);
 
 /* type, self, data */
 #define vector_push_back(type, self, data) ({						\
-	base_vector_t *__base_self0 = (base_vector_t *)(self);			\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);			\
 	bool rv = True;													\
-	if (__base_self0->_end == __base_self0->_capacity)				\
-		if (vector_extend_capacity(type, __base_self0) == False)	\
+	if (ANON(_self)->_end == ANON(_self)->_capacity)				\
+		if (vector_extend_capacity(type, ANON(_self)) == False)	\
 			rv = False;												\
 	\
 	if (rv) {														\
-		*(type *)__base_self0->_end = data; 						\
-		__base_self0->_end = (type *)__base_self0->_end + 1;		\
+		*(type *)ANON(_self)->_end = data; 							\
+		ANON(_self)->_end = (type *)ANON(_self)->_end + 1;			\
 	} rv;															\
 })
 
@@ -175,11 +181,11 @@ void* _vector_get(size_t type_size, base_vector_t *self, size_t index);
 
 /* type, self, index1, index2 */
 #define vector_swap(type, self, index1, index2) ({ 									\
-	base_vector_t *__base_self1 = (base_vector_t *)(self); 							\
+	base_vector_t *ANON(___self) = (base_vector_t *)(self); 							\
 	size_t i1 = (index1), i2 = (index2);											\
-	type __tmp = *vector_get(type, __base_self1, i1);								\
-	*vector_get(type, __base_self1, i1) = *vector_get(type, __base_self1, i2);		\
-	*vector_get(type, __base_self1, i2) = __tmp;									\
+	type __tmp = *vector_get(type, ANON(___self), i1);								\
+	*vector_get(type, ANON(___self), i1) = *vector_get(type, ANON(___self), i2);		\
+	*vector_get(type, ANON(___self), i2) = __tmp;									\
 })
 
 
@@ -200,20 +206,20 @@ bool _vector_insert_p
 
 /* type, self, index, value / rvalue alabilmek için makro olmalı */
 #define vector_insert(type, self, index, value)	({							\
-	base_vector_t *__base_self2 = (base_vector_t *)(self);					\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);					\
 	size_t _i, __length; bool rv = True; 									\
-	if (__base_self2->_end == __base_self2->_capacity)						\
-		if (vector_extend_capacity(type, __base_self2) == False)			\
+	if (ANON(_self)->_end == ANON(_self)->_capacity)						\
+		if (vector_extend_capacity(type, ANON(_self)) == False)			\
 			rv = False;														\
 	\
 	if (rv) {																					\
-		__length = vector_length(type, __base_self2);											\
+		__length = vector_length(type, ANON(_self));											\
 		for (_i = __length; _i > index; _i--)													\
 			/* __base_self2[i] = __base_self2[i-1] soldan sağa doğru giderek sağa kaydırma */ 	\
-			*((type *)__base_self2->_start + _i) = *((type *)__base_self2->_start + _i - 1);	\
+			*((type *)ANON(_self)->_start + _i) = *((type *)ANON(_self)->_start + _i - 1);	\
 		/* istenilen indexe istenilen data */													\
-		*vector_get(type, __base_self2, index) = value;											\
-		__base_self2->_end = (type *)__base_self2->_end + 1;									\
+		*vector_get(type, ANON(_self), index) = value;											\
+		ANON(_self)->_end = (type *)ANON(_self)->_end + 1;									\
 	} rv;																						\
 })
 
@@ -221,12 +227,12 @@ bool _vector_insert_p
 
 /* type, self / faster */
 #define vector_shift_r(type, self) ({													\
-	base_vector_t *__base_self3 = (base_vector_t *)(self);								\
-	size_t _i, last_index = vector_length(type, __base_self3) - 1;						\
-	type __tmp = *vector_get(type, __base_self3, last_index);							\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);								\
+	size_t _i, last_index = vector_length(type, ANON(_self)) - 1;						\
+	type __tmp = *vector_get(type, ANON(_self), last_index);							\
 	for (_i = last_index; _i > 0; _i--)													\
-		*vector_get(type, __base_self3, _i) = *vector_get(type, __base_self3, _i-1);	\
-	*vector_get(type, __base_self3, 0) = __tmp;											\
+		*vector_get(type, ANON(_self), _i) = *vector_get(type, ANON(_self), _i-1);	\
+	*vector_get(type, ANON(_self), 0) = __tmp;											\
 })
 
 /* type, self / slower */
@@ -239,12 +245,12 @@ void _vector_shift_r(size_t type_size, base_vector_t *self);
 
 /* type, self / faster */
 #define vector_shift_l(type, self) ({													\
-	base_vector_t *__base_self4 = (base_vector_t *)(self);								\
-	size_t _i, __length = vector_length(type, __base_self4);							\
-	type __tmp = *vector_get(type, __base_self4, 0);									\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);								\
+	size_t _i, __length = vector_length(type, ANON(_self));								\
+	type __tmp = *vector_get(type, ANON(_self), 0);										\
 	for (_i = 1; _i < __length; _i++)													\
-		*vector_get(type, __base_self4, _i - 1) = *vector_get(type, __base_self4, _i);	\
-	*vector_get(type, __base_self4, __length - 1) = __tmp;								\
+		*vector_get(type, ANON(_self), _i - 1) = *vector_get(type, ANON(_self), _i);	\
+	*vector_get(type, ANON(_self), __length - 1) = __tmp;								\
 })
 
 
@@ -258,10 +264,10 @@ void _vector_shift_l(size_t type_size, base_vector_t *self);
 
 /* type, self / makrolar daha hızlı */
 #define vector_reverse(type, self) ({							\
-	base_vector_t *__base_self5 = (base_vector_t *)(self);		\
-	size_t _i, __length = vector_length(type, __base_self5);	\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);		\
+	size_t _i, __length = vector_length(type, ANON(_self));	\
 	for (_i = 0; _i < __length / 2; _i++)						\
-		vector_swap(type, __base_self5, _i, __length - 1 - _i);	\
+		vector_swap(type, ANON(_self), _i, __length - 1 - _i);	\
 })
 
 
@@ -290,13 +296,13 @@ void __vector_sort_merge
 /* aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa */
 /* type, self, max_func / faster */
 #define vector_sort_bubble(type, self, max_func) ({														\
-	base_vector_t *__base_self6 = (base_vector_t *)(self);												\
-	size_t _i, j, last_index = vector_length(type, __base_self6) - 1;									\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);												\
+	size_t _i, j, last_index = vector_length(type, ANON(_self)) - 1;									\
 	for (_i = 0; _i < last_index; _i++)																	\
 		for (j = 0; j < last_index-_i; j++)																\
-           	if ( MO_FIRST_ARG == max_func(vector_get(type, __base_self6, j), 							\
-			   								vector_get(type, __base_self6, j+1)) )						\
-              	vector_swap(type, __base_self6, j, j+1);												\
+           	if ( MO_FIRST_ARG == max_func(vector_get(type, ANON(_self), j), 							\
+			   								vector_get(type, ANON(_self), j+1)) )						\
+              	vector_swap(type, ANON(_self), j, j+1);													\
 })
 
 
@@ -322,20 +328,20 @@ size_t __vector_search_binary_p
 
 /* type, self, target, max_func */
 #define vector_search_binary(type, self, target, max_func) ({		\
-	base_vector_t *__base_self7 = (base_vector_t *)(self);			\
-	_vector_search_binary(type, __base_self7, target, 0, 			\
-				vector_length(type, __base_self7), max_func);		\
+	base_vector_t *ANON(__self) = (base_vector_t *)(self);			\
+	_vector_search_binary(type, ANON(__self), target, 0, 			\
+				vector_length(type, ANON(__self)), max_func);		\
 })
 
 /* type, self, target, array_start, array_length, max_func */
 #define _vector_search_binary(type, self, target, array_start, array_length, max_func) ({	\
-	base_vector_t *__base_self8 = (base_vector_t *)(self);							\
+	base_vector_t *ANON(_self) = (base_vector_t *)(self);							\
 	type _target = (target);														\
 	size_t _array_start = (array_start) + 1, _array_length = (array_length) + 1;	\
 	size_t mid_point, found = -1; max_output_t rv;									\
 	while (_array_start <= _array_length) {											\
 		mid_point = (int)(_array_start + (_array_length - _array_start - 2) / 2);	\
-		rv = max_func(vector_get(type, __base_self8, mid_point), &_target);			\
+		rv = max_func(vector_get(type, ANON(_self), mid_point), &_target);			\
 		if (rv == MO_ARGS_EQUAL) {													\
 			found = mid_point; break;												\
 		} else if (rv == MO_FIRST_ARG)												\
